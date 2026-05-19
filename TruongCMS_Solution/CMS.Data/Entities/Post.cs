@@ -1,27 +1,17 @@
-﻿/* Họ tên :Quang Văn Trường
- * MSSV: 2123170591
- * version : 1.0*/
+﻿namespace CMS.Data.Entities;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CMS.Data.Entities
+/// <summary>
+/// Thực thể Bài viết (bảng Posts).
+/// </summary>
+public class Post
 {
-    // thuc the bai viet
-    internal class Post
-    {
-        public int Id { get; set; } // khoa chinh
-        public string Title { get; set; } // tieu de bai viet
-        public string Content { get; set; } // noi dung bai viet
-        public string ImageUrl { get; set; } // duong dan hinh anh dai dien 
-        public DateTime CreatedDate { get; set; }= DateTime.Now; // ngay tao bai viet
-        // khóa ngoại liên kết với danh mục
-        public int CategoryId { get; set; } // khoa ngoai
-        public virtual Category Category { get; set; } // moi quan he voi danh muc san pham
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;       // Tiêu đề hiển thị trên card
+    public string Content { get; set; } = string.Empty;     // Nội dung đầy đủ (trang Details)
+    public string? ImageUrl { get; set; }                   // URL ảnh đại diện
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-
-    }
+    // Khóa ngoại -> bảng Categories
+    public int CategoryId { get; set; }
+    public virtual Category? Category { get; set; }           // Đối tượng danh mục liên kết
 }

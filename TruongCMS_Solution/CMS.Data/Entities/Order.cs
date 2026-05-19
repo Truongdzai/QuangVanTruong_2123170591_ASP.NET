@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace CMS.Data.Entities
+
+namespace CMS.Data.Entities;
+
+/// <summary>
+/// Đơn hàng (bảng Orders).
+/// Status: 0 = Chờ duyệt, 1 = Đang giao, 2 = Hoàn thành.
+/// </summary>
+public class Order
 {
-    internal class Order
-    {
-        [Key]
-        public int Id { get; set; }// khoa chinh
-        public DateTime OrderDate { get; set; } = DateTime.Now; // ngay dat hang
-        public int CustomerId { get; set; } // khoa ngoai
-        public int Status { get; set; } // trang thai don hang (0: dang xu ly, 1: da xac nhan, 2: da giao hang, 3: da huy)
-        public string? Notes { get; set; } // ghi chu don hang
-        [ForeignKey("CustomerId")]
-        public virtual Customer? Customer { get; set; } // moi quan he voi khach hang
-        public virtual ICollection<OrderDetail> OrderDetail { get; set; } // moi quan he voi chi tiet don hang
+    [Key]
+    public int Id { get; set; }
 
+    public DateTime OrderDate { get; set; } = DateTime.Now;
+    public int CustomerId { get; set; }
+    public int Status { get; set; }
+    public string? Notes { get; set; }
 
-    }
+    [ForeignKey(nameof(CustomerId))]
+    public virtual Customer? Customer { get; set; }
+
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

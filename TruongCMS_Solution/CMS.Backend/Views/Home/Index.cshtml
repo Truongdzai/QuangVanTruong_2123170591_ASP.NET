@@ -1,8 +1,14 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ CMS";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Quang Văn Trường</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core & Frontend React \nMy name's Quang Van Truong\nMSV: 2123170591'</a>.</p>
+    <h1 class="display-4">CMS Full-Stack</h1>
+    <p class="lead">Quang Văn Trường — MSV: 2123170591</p>
+    <p class="text-muted">Buổi 1–2: Solution 3 lớp + Entity Framework Core</p>
+    <span class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+        <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Danh mục tin</a>
+        <a asp-controller="Post" asp-action="Index" class="btn btn-danger">Bài viết</a>
+        <a asp-controller="User" asp-action="Index" class="btn btn-dark">Thành viên</a>
+    </span>
 </div>

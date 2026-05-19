@@ -1,24 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace CMS.Data.Entities
+
+namespace CMS.Data.Entities;
+
+/// <summary>
+/// Chi tiết đơn hàng — mỗi dòng = 1 sản phẩm trong đơn (bảng OrderDetails).
+/// </summary>
+public class OrderDetail
 {
-    internal class OrderDetail
-    {
-        [Key]
-        public int Id { get; set; } // khoa chinh
-        public int OrderId { get; set; } // khoa ngoai
-        public int ProductId { get; set; } // khoa ngoai
-        public int Quantity { get; set; } // so luong san pham
-        [Column(TypeName = "decimal(18,2)")] // định nghĩa kiểu dữ liệu decimal với độ chính xác 18 và 2 chữ số thập phân
-        public decimal UnitPrice { get; set; } // gia san pham tai thoi diem dat hang
-        [ForeignKey("OrderId")]
-        public virtual Order? Order { get; set; } // moi quan he voi don hang
-        [ForeignKey("ProductId")]
-        public virtual Product? Product { get; set; } // moi quan he voi san pham
-    }
+    [Key]
+    public int Id { get; set; }
+
+    public int OrderId { get; set; }    // Thuộc đơn hàng nào
+    public int ProductId { get; set; }  // Sản phẩm nào
+    public int Quantity { get; set; }   // Số lượng mua
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal UnitPrice { get; set; } // Giá tại thời điểm đặt (có thể khác giá hiện tại)
+
+    [ForeignKey(nameof(OrderId))]
+    public virtual Order? Order { get; set; }
+
+    [ForeignKey(nameof(ProductId))]
+    public virtual Product? Product { get; set; }
 }

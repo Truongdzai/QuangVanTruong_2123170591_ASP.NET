@@ -1,24 +1,15 @@
-﻿/* Họ tên :Quang Văn Trường
- * MSSV: 2123170591
- * Ngày tạo: 2026-05-14
- * version : 1.0*/
+﻿namespace CMS.Data.Entities;
 
+/// <summary>
+/// Thực thể Danh mục tin (bảng Categories).
+/// Quan hệ 1-n: 1 danh mục có nhiều bài viết (Post).
+/// </summary>
+public class Category
+{
+    public int Id { get; set; }                      // Khóa chính, Identity trong SQL
+    public string Name { get; set; } = string.Empty; // Tên danh mục (vd: Tin Công nghệ)
+    public string? Description { get; set; }         // Mô tả ngắn (nullable)
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CMS.Data.Entities
-
-{   //thuc the danh muc san phan
-    internal class Category
-    {
-     public int Id { get; set; } // khoa chinh
-        public string Name { get; set; } // ten danh muc san pham
-        public string Description { get; set; } // mo ta danh muc san pham
-        // moi quan he voi bai viet
-        public virtual ICollection <Post> Potsts { get; set; }
-    }
+    // Navigation property: EF dùng để Include() / join bảng Posts
+    public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 }

@@ -1,0 +1,38 @@
+@* View quản lý thành viên — không hiển thị PasswordHash (bảo mật) *@
+@model IEnumerable<CMS.Data.Entities.User>
+
+<div class="container mt-4">
+    <h2 class="text-dark mb-3">QUẢN LÝ THÀNH VIÊN</h2>
+
+    <table class="table table-hover shadow-sm border">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên đăng nhập</th>
+                <th>Họ và tên</th>
+                <th>Quyền hạn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td><strong>@user.Username</strong></td>
+                    <td>@user.FullName</td>
+                    <td>
+                        @* Badge màu đỏ cho Admin, xanh cho role khác *@
+                        @if (user.Role is "Admin" or "Administrator")
+                        {
+                            <span class="badge bg-danger">@user.Role</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-info text-dark">@user.Role</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

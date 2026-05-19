@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CMS.Data.Entities;
 
-namespace CMS.Data.Entities
+/// <summary>
+/// Thực thể Người dùng quản trị (bảng Users) — khác bảng Customers (khách mua hàng).
+/// </summary>
+public class User
 {
-    // thuc the nguoi dung
-    internal class User
-    {
-        public int Id { get; set; } // khoa chinh
-        public string Username { get; set; } // ten dang nhap
-        public string PasswordHash { get; set; } // ma hoa mat khau
-        public string FullName { get; set; } // ho ten nguoi dung
-        public string Role { get; set; } // vai tro nguoi dung (admin, editor, viewer)
-
-    }
+    public int Id { get; set; }
+    public string Username { get; set; } = string.Empty;     // Tên đăng nhập
+    public string PasswordHash { get; set; } = string.Empty; // Mật khẩu (Buổi 5: hash thật)
+    public string FullName { get; set; } = string.Empty;     // Họ tên hiển thị
+    public string Role { get; set; } = string.Empty;         // Admin, Editor, User...
 }

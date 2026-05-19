@@ -1,20 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CMS.Data.Entities;// kết nối với thư mục chứa các thực thể dữ liệu, trong đó có Category
-using System.Collections.Generic; // sử dụng thư viện để làm việc với danh sách
-namespace CMS.Backend.Controllers
+﻿// Họ tên: Quang Văn Trường | MSV: 2123170591
+// Buổi 2: Thay mock data (Buổi 1) bằng dữ liệu thật từ bảng Categories
+//Version: 1.2
+using CMS.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace CMS.Backend.Controllers;
+
+/// <summary>
+/// Controller quản lý danh mục tin tức (bảng Categories).
+/// Buổi 1: dùng List&lt;Category&gt; giả trong code.
+/// Buổi 2: gọi _context.Categories từ SQL Server.
+/// </summary>
+public class CategoryController : Controller
 {
-    public class CategoryController : Controller
+    private readonly ApplicationDbContext _context;
+
+    public CategoryController(ApplicationDbContext context)
     {
-        public IActionResult Index()
-        {
-            // tạo danh sách dữ liệu mẫu cho các danh mục sản phẩm
-            var list=new List<Category>
-            {
-                new Category { Id=1, Name="Điện thoại", Description="Các loại điện thoại thông minh" },
-                new Category { Id=2, Name="Máy tính xách tay", Description="Các loại laptop và máy tính bảng" },
-                new Category { Id=3, Name="Phụ kiện", Description="Các loại phụ kiện điện tử" }
-            };
-            return View(list); // trả về view và truyền danh sách dữ liệu mẫu vào view để hiển thị
-        }
+        _context = context;
+    }
+
+    /// <summary>
+    /// GET /Category/Index — hiển thị bảng danh mục.
+    /// </summary>
+    public async Task<IActionResult> Index()
+    {
+        // Lấy toàn bộ dòng trong bảng Categories
+        var data = await _context.Categories.ToListAsync();
+
+        // Gửi sang Views/Category/Index.cshtml (IEnumerable&lt;Category&gt;)
+        return View(data);
     }
 }

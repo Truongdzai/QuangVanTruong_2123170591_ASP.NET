@@ -1,0 +1,27 @@
+﻿@* Buổi 2: View hiển thị danh mục — nhận danh sách từ CategoryController.Index *@
+@* @model: kiểu dữ liệu Controller truyền sang (IEnumerable<Category>) *@
+@model IEnumerable<CMS.Data.Entities.Category>
+
+<h2 class="text-primary">DANH SÁCH DANH MỤC (DỮ LIỆU TỪ DATABASE)</h2>
+
+@* Bảng Bootstrap — hiển thị Id, Name, Description *@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên danh mục</th>
+            <th>Mô tả</th>
+        </tr>
+    </thead>
+    <tbody>
+        @* foreach: lặp từng Category trong Model (dữ liệu từ _context.Categories) *@
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>           @* @item: in giá trị ra HTML *@
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>
