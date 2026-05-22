@@ -1,5 +1,4 @@
-// Nạp dữ liệu mẫu lần đầu (Buổi 2)
-// Chạy tự động trong Program.cs sau Migrate()
+//BUỔI 3: TRUY VẤN LINQ & THAO TÁC DỮ LIỆU CHUYÊN SÂU
 
 using CMS.Data.Entities;
 
@@ -13,7 +12,7 @@ public static class DbInitializer
     /// </summary>
     public static void Seed(ApplicationDbContext context)
     {
-        // Any(): có ít nhất 1 dòng → đã seed rồi → thoát
+        // Any(): có ít nhất 1 dòng -> đã seed rồi -> thoát
         if (context.Categories.Any())
             return;
 
@@ -27,47 +26,48 @@ public static class DbInitializer
             new() { Name = "Góc lập trình viên", Description = "Tài liệu ASP.NET Core và SQL Server." }
         };
         context.Categories.AddRange(categories);
-        context.SaveChanges(); // Ghi xuống SQL → Id tự tăng 1,2,3,4,5
+        context.SaveChanges(); // Ghi xuống SQL -> Id tự tăng 1,2,3,4,5
 
         // --- BẢNG POSTS (CategoryId phải trùng Id đã có trong Categories) ---
+        // picsum.photos/seed/{từ-khóa}/400/200 → ảnh ngẫu nhiên nhưng cố định theo seed
         context.Posts.AddRange(
             new Post
             {
                 Title = "Lộ trình học ASP.NET",
-                Content = "Hướng dẫn chi tiết cho người mới bắt đầu...",
-                ImageUrl = "https://via.placeholder.com/400x200?text=ASP.NET",
+                Content = "Hướng dẫn chi tiết cho người mới bắt đầu học ASP.NET Core từ cơ bản đến nâng cao.",
+                ImageUrl = "https://picsum.photos/seed/aspnet/400/200",
                 CategoryId = 5, // Góc lập trình viên
                 CreatedDate = new DateTime(2026, 4, 1)
             },
             new Post
             {
                 Title = "Top 5 bãi biển đẹp",
-                Content = "Những địa điểm không thể bỏ qua mùa hè này...",
-                ImageUrl = "https://via.placeholder.com/400x200?text=Beach",
+                Content = "Những địa điểm không thể bỏ qua mùa hè này, từ Phú Quốc đến Đà Nẵng.",
+                ImageUrl = "https://picsum.photos/seed/beach/400/200",
                 CategoryId = 2,
                 CreatedDate = new DateTime(2026, 4, 2)
             },
             new Post
             {
                 Title = "Chạy bộ đúng cách",
-                Content = "Lợi ích tuyệt vời của việc chạy bộ mỗi sáng...",
-                ImageUrl = "https://via.placeholder.com/400x200?text=Running",
+                Content = "Lợi ích tuyệt vời của việc chạy bộ mỗi sáng và kỹ thuật chạy đúng không gây đau khớp.",
+                ImageUrl = "https://picsum.photos/seed/running/400/200",
                 CategoryId = 3,
                 CreatedDate = new DateTime(2026, 4, 3)
             },
             new Post
             {
                 Title = "AI và tương lai",
-                Content = "Trí tuệ nhân tạo đang thay đổi cuộc sống...",
-                ImageUrl = "https://via.placeholder.com/400x200?text=AI",
+                Content = "Trí tuệ nhân tạo đang thay đổi cuộc sống như thế nào và cơ hội nghề nghiệp trong lĩnh vực AI.",
+                ImageUrl = "https://picsum.photos/seed/ai2026/400/200",
                 CategoryId = 1,
                 CreatedDate = new DateTime(2026, 4, 4)
             },
             new Post
             {
                 Title = "Kỹ năng Teamwork",
-                Content = "Cách phối hợp hiệu quả trong nhóm dự án...",
-                ImageUrl = "https://via.placeholder.com/400x200?text=Team",
+                Content = "Cách phối hợp hiệu quả trong nhóm dự án, giải quyết xung đột và đạt mục tiêu chung.",
+                ImageUrl = "https://picsum.photos/seed/teamwork/400/200",
                 CategoryId = 4,
                 CreatedDate = new DateTime(2026, 4, 5)
             }

@@ -1,14 +1,42 @@
-﻿@{
+@* Buổi 3: Trang chủ hiển thị 3 bài viết mới nhất (LINQ: OrderByDescending + Take(3)) *@
+@model IEnumerable<CMS.Data.Entities.Post>
+
+@{
     ViewData["Title"] = "Trang chủ CMS";
 }
 
-<div class="text-center">
+<div class="text-center mb-5">
     <h1 class="display-4">CMS Full-Stack</h1>
     <p class="lead">Quang Văn Trường — MSV: 2123170591</p>
-    <p class="text-muted">Buổi 1–2: Solution 3 lớp + Entity Framework Core</p>
-    <span class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+    <p class="text-muted">Buổi 3: LINQ & Thao tác dữ liệu chuyên sâu</p>
+    <span class="d-flex flex-wrap gap-2 justify-content-center mt-3">
         <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Danh mục tin</a>
         <a asp-controller="Post" asp-action="Index" class="btn btn-danger">Bài viết</a>
         <a asp-controller="User" asp-action="Index" class="btn btn-dark">Thành viên</a>
     </span>
+</div>
+
+<h2 class="text-center mb-4 text-danger">TIN TỨC MỚI NHẤT</h2>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.svg" : item.ImageUrl)"
+                     class="card-img-top" style="height:180px;object-fit:cover"
+                     alt="@item.Title" onerror="this.src='/images/no-image.svg'">
+                <div class="card-body d-flex flex-column">
+                    @* Badge tên danh mục — lấy được nhờ .Include(p => p.Category) trong HomeController *@
+                    <span class="badge bg-primary mb-2">@item.Category?.Name</span>
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text text-truncate">@item.Content</p>
+                    <a asp-controller="Post" asp-action="Details" asp-route-id="@item.Id"
+                       class="btn btn-outline-danger btn-sm mt-auto">Đọc tiếp</a>
+                </div>
+                <div class="card-footer text-muted small">
+                    Ngày đăng: @item.CreatedDate.ToString("dd/MM/yyyy")
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -1,26 +1,41 @@
-﻿@* Buổi 2: View hiển thị danh mục — nhận danh sách từ CategoryController.Index *@
-@* @model: kiểu dữ liệu Controller truyền sang (IEnumerable<Category>) *@
+@*
+Quang Van Truong || 2123170591
+Buổi 3: Thêm nút Sửa/Xóa và nút Thêm danh mục mới *@
 @model IEnumerable<CMS.Data.Entities.Category>
 
 <h2 class="text-primary">DANH SÁCH DANH MỤC (DỮ LIỆU TỪ DATABASE)</h2>
 
-@* Bảng Bootstrap — hiển thị Id, Name, Description *@
+@* Nút thêm mới — asp-action tự tạo link /Category/Create *@
+<a asp-action="Create" class="btn btn-success mb-3">
+    <i class="bi bi-plus-circle"></i> Thêm danh mục mới
+</a>
+
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>ID</th>
             <th>Tên danh mục</th>
             <th>Mô tả</th>
+            <th style="width:160px">Thao tác</th>
         </tr>
     </thead>
     <tbody>
-        @* foreach: lặp từng Category trong Model (dữ liệu từ _context.Categories) *@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Id</td>           @* @item: in giá trị ra HTML *@
+                <td>@item.Id</td>
                 <td>@item.Name</td>
                 <td>@item.Description</td>
+                <td>
+                    @* asp-route-id: đính kèm id vào URL -> /Category/Edit/1 *@
+                    <a asp-action="Edit" asp-route-id="@item.Id"
+                       class="btn btn-sm btn-outline-warning">Sửa</a>
+
+                    @* onclick confirm: hộp thoại xác nhận trước khi xóa *@
+                    <a asp-action="Delete" asp-route-id="@item.Id"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">Xóa</a>
+                </td>
             </tr>
         }
     </tbody>

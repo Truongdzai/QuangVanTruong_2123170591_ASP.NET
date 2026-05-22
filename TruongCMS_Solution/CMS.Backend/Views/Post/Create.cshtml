@@ -1,0 +1,59 @@
+@*
+Quang Van Truong || 2123170591
+Buổi 3: Form thêm bài viết mới — có upload ảnh
+*@
+@model CMS.Data.Entities.Post
+
+<div class="container mt-4" style="max-width:700px">
+    <h2 class="text-danger mb-3">THÊM BÀI VIẾT MỚI</h2>
+    <hr />
+
+    @* enctype="multipart/form-data" — BẮT BUỘC khi form có upload file *@
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Tiêu đề:</label>
+            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Danh mục:</label>
+            @* asp-items: render <option> từ SelectList trong ViewBag.Categories *@
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option value="">-- Chọn danh mục --</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nội dung:</label>
+            <textarea asp-for="Content" class="form-control" rows="5"
+                      placeholder="Nhập nội dung bài viết..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ảnh đại diện:</label>
+            <input type="file" name="imageFile" id="imageFile"
+                   class="form-control" accept="image/*"
+                   onchange="previewImage(this)" />
+            @* Preview ảnh ngay khi chọn file *@
+            <img id="imgPreview" src="/images/no-image.svg"
+                 class="mt-2 rounded border" style="height:160px;object-fit:cover;width:100%" />
+        </div>
+
+        <button type="submit" class="btn btn-danger">Đăng bài</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    // Xem trước ảnh ngay khi người dùng chọn file — không cần upload lên server
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById('imgPreview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+}

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">
+  <rect width="400" height="200" fill="#e9ecef"/>
+  <text x="200" y="90" text-anchor="middle" font-size="40" font-family="Arial" fill="#adb5bd">&#128444;</text>
+  <text x="200" y="130" text-anchor="middle" font-size="14" font-family="Arial" fill="#6c757d">Chưa có ảnh</text>
+</svg>

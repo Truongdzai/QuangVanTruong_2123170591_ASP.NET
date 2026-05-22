@@ -1,0 +1,65 @@
+@*
+Quang Van Truong || 2123170591
+Buổi 3: Form chỉnh sửa bài viết — giữ ảnh cũ hoặc thay ảnh mới
+*@
+@model CMS.Data.Entities.Post
+
+<div class="container mt-4" style="max-width:700px">
+    <h2 class="text-warning mb-3">CHỈNH SỬA BÀI VIẾT</h2>
+    <hr />
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        @* Hidden fields giữ Id và ImageUrl cũ — thiếu dòng này sẽ mất dữ liệu *@
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ImageUrl" />
+        <input type="hidden" asp-for="CreatedDate" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Tiêu đề:</label>
+            <input asp-for="Title" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Danh mục:</label>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
+                <option value="">-- Chọn danh mục --</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nội dung:</label>
+            <textarea asp-for="Content" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ảnh hiện tại:</label>
+            <div>
+                @* Hiển thị ảnh đang lưu trong DB (local hoặc URL ngoài) *@
+                <img id="imgPreview"
+                     src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.svg" : Model.ImageUrl)"
+                     class="rounded border mb-2"
+                     style="height:160px;object-fit:cover;width:100%" />
+            </div>
+
+            <label class="form-label">Thay ảnh mới <span class="text-muted">(để trống = giữ ảnh cũ)</span>:</label>
+            <input type="file" name="imageFile" id="imageFile"
+                   class="form-control" accept="image/*"
+                   onchange="previewImage(this)" />
+        </div>
+
+        <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => document.getElementById('imgPreview').src = e.target.result;
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+}

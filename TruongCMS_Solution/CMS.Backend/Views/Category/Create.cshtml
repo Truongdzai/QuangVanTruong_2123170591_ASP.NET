@@ -1,0 +1,24 @@
+@*
+Quang Van Truong || 2123170591
+Buổi 3: Form thêm mới danh mục *@
+@model CMS.Data.Entities.Category
+
+<div class="container mt-4">
+    <h2 class="text-primary">THÊM DANH MỤC MỚI</h2>
+    <hr />
+
+    @* asp-action="Create": form POST tới CategoryController.Create(Category model) *@
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">Tên danh mục:</label>
+            @* asp-for: tự bind Name property của model, tạo name="Name" trên input *@
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mô tả:</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Lưu vào hệ thống</button>
+        <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
+    </form>
+</div>
