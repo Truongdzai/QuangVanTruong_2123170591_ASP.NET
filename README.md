@@ -58,7 +58,7 @@ TruongCMS_Solution/
 ## Cài đặt & Chạy dự án
 
 ### Yêu cầu
-- Visual Studio 2022 (workload: **ASP.NET and web development**)
+- Visual Studio 2022 or 2026(workload: **ASP.NET and web development**)
 - .NET 10 SDK
 - SQL Server Express hoặc LocalDB
 
