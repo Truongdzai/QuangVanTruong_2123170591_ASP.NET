@@ -1,8 +1,8 @@
 # TruongCMS — Đồ án CMS Full-Stack ASP.NET Core
 
 **Họ tên:** Quang Văn Trường | **MSV:** 2123170591  
-**Môn học:** Chuyên đề ASP.NET Core  
-**Stack:** ASP.NET Core MVC (.NET 10) + Entity Framework Core + SQL Server + ReactJS *(buổi 7–9)*
+**Môn học:** Chuyên đề ASP.NET Core | **Giảng viên:** Nguyễn Cao Thái  
+**Stack:** ASP.NET Core MVC (.NET 10) + Entity Framework Core + SQL Server + ReactJS
 
 ---
 
@@ -10,39 +10,47 @@
 
 ```
 TruongCMS_Solution/
-├── CMS.Data/               # Lớp dữ liệu — Entities, DbContext, Migrations
+├── CMS.Data/                        # Lớp dữ liệu — Entities, DbContext, Migrations
 │   ├── Entities/
-│   │   ├── Category.cs     # Danh mục tin tức
-│   │   ├── Post.cs         # Bài viết
-│   │   ├── User.cs         # Người dùng quản trị
+│   │   ├── Category.cs              # Danh mục tin tức
+│   │   ├── Post.cs                  # Bài viết
+│   │   ├── User.cs                  # Người dùng quản trị
 │   │   ├── CategoryProduct.cs
 │   │   ├── Product.cs
 │   │   ├── Customer.cs
 │   │   ├── Order.cs
 │   │   └── OrderDetail.cs
 │   ├── ApplicationDbContext.cs
-│   ├── DbInitializer.cs    # Seed dữ liệu mẫu lần đầu
+│   ├── DbInitializer.cs             # Seed dữ liệu mẫu lần đầu
 │   └── Migrations/
 │
-├── CMS.Backend/            # Lớp xử lý — Controllers + Views (MVC)
+├── CMS.Backend/                     # Lớp xử lý — Controllers + Views (MVC)
 │   ├── Controllers/
-│   │   ├── HomeController.cs
-│   │   ├── CategoryController.cs
-│   │   ├── PostController.cs
-│   │   └── UserController.cs
+│   │   ├── AdminController.cs       # [MỚI B4] Bảng điều khiển thống kê
+│   │   ├── HomeController.cs        # Trang chủ — 3 bài mới nhất
+│   │   ├── CategoryController.cs    # CRUD danh mục
+│   │   ├── PostController.cs        # CRUD bài viết + upload ảnh
+│   │   └── UserController.cs        # CRUD thành viên
 │   ├── Views/
-│   │   ├── Home/Index.cshtml
-│   │   ├── Category/Index.cshtml
-│   │   ├── Category/Create.cshtml
-│   │   ├── Category/Edit.cshtml
-│   │   ├── Post/Index.cshtml
-│   │   ├── Post/Details.cshtml
-│   │   └── User/Index.cshtml
+│   │   ├── Shared/
+│   │   │   ├── _Layout.cshtml       # Layout trang công khai
+│   │   │   └── _LayoutAdmin.cshtml  # [MỚI B4] Layout khu quản trị (dark sidebar)
+│   │   ├── Admin/
+│   │   │   └── Index.cshtml         # [MỚI B4] Bảng điều khiển
+│   │   ├── Home/Index.cshtml        # Trang chủ công khai
+│   │   ├── Category/                # Index, Create, Edit
+│   │   ├── Post/                    # Index, Create, Edit, Details
+│   │   └── User/                    # [CẬP NHẬT B4] Index, Create, Edit
+│   ├── wwwroot/
+│   │   ├── images/
+│   │   │   ├── no-image.svg         # Ảnh thay thế khi lỗi
+│   │   │   └── posts/               # [MỚI B4] img1.png — img6.png
+│   │   └── uploads/                 # Ảnh do admin upload (không commit)
 │   └── Program.cs
 │
-├── cms.frontend/           # Lớp giao diện — ReactJS (buổi 7–9)
+├── cms.frontend/                    # Lớp giao diện — ReactJS (buổi 7–9)
 └── script/
-    └── 01_CreateTables.sql # Script tạo 8 bảng thủ công (thay cho Migration)
+    └── 01_CreateTables.sql          # Script tạo bảng thủ công
 ```
 
 ---
@@ -66,7 +74,7 @@ Mở `CMS.Backend/appsettings.json` và chỉnh `ConnectionStrings`:
 
 ### Bước 2 — Tạo Database
 
-**Cách A — EF Core Migration** (khuyến nghị):
+**Cách A — EF Core Migration**:
 ```bash
 # Trong Package Manager Console (chọn Default project: CMS.Data)
 Add-Migration InitialCreate
@@ -74,7 +82,7 @@ Update-Database
 ```
 
 **Cách B — Script SQL thủ công**:  
-Mở SSMS → tạo database `TruongCMS_DB` → chạy `script/01_CreateTables.sql`.
+Mở SSMS ->tạo database `TruongCMS_DB` -> chạy `script/01_CreateTables.sql`.
 
 ### Bước 3 — Chạy ứng dụng
 
@@ -88,16 +96,28 @@ Hoặc nhấn **F5** trong Visual Studio. Ứng dụng tự seed dữ liệu m�
 
 ## Các trang chức năng
 
+### Trang công khai
+
 | URL | Chức năng |
 |-----|-----------|
 | `/` | Trang chủ — hiển thị 3 bài viết mới nhất |
-| `/Category` | Danh sách danh mục (có nút Thêm/Sửa/Xóa) |
-| `/Category/Create` | Form thêm danh mục mới |
-| `/Category/Edit/{id}` | Form chỉnh sửa danh mục |
-| `/Post` | Danh sách toàn bộ bài viết |
-| `/Post/Index/{id}` | Lọc bài viết theo danh mục |
 | `/Post/Details/{id}` | Chi tiết một bài viết |
-| `/User` | Danh sách tài khoản hệ thống |
+
+### Khu quản trị Admin (`_LayoutAdmin` — dark sidebar)
+
+| URL | Chức năng |
+|-----|-----------|
+| `/Admin` | **Bảng điều khiển** — thống kê bài viết, danh mục, thành viên |
+| `/Category` | Danh sách danh mục |
+| `/Category/Create` | Thêm danh mục mới |
+| `/Category/Edit/{id}` | Sửa danh mục |
+| `/Post` | Danh sách bài viết |
+| `/Post/Create` | Thêm bài viết + upload ảnh |
+| `/Post/Edit/{id}` | Sửa bài viết |
+| `/Post/Details/{id}` | Xem chi tiết bài viết |
+| `/User` | Danh sách thành viên |
+| `/User/Create` | Thêm thành viên mới |
+| `/User/Edit/{id}` | Sửa thông tin thành viên |
 
 ---
 
@@ -156,21 +176,52 @@ DbContext, Connection String, Migration workflow, `async/await` với `ToListAsy
 - `POST /Category/Edit` → `Update()` + `SaveChanges()` → cập nhật SQL
 - `GET /Category/Delete/{id}` → `Remove()` + `SaveChanges()` → xóa SQL
 
-**Cập nhật Controller:**
-- `PostController.Index(int? id)` — hỗ trợ lọc theo CategoryId + Include
-- `PostController.Details(int id)` — Include Category để hiển thị tên danh mục
-- `HomeController.Index()` — Inject DbContext, LINQ lấy 3 bài mới nhất
-
-**Views mới / cập nhật:**
-- `Category/Create.cshtml` — form thêm mới với Tag Helper `asp-for`, `asp-action`
-- `Category/Edit.cshtml` — form sửa với `<input type="hidden" asp-for="Id" />`
-- `Category/Index.cshtml` — thêm nút Sửa/Xóa, nút Thêm danh mục mới
-- `Post/Index.cshtml` — thêm badge tên danh mục
-- `Post/Details.cshtml` — hiển thị tên danh mục
-- `Home/Index.cshtml` — hiển thị 3 card bài viết mới nhất
+**Xử lý ảnh:**
+- Thêm fallback `no-image.svg` khi ảnh lỗi hoặc không có
+- Dùng `onerror="this.src='/images/no-image.svg'"` trên tất cả thẻ `<img>`
 
 **Kiến thức:**  
-Cú pháp LINQ lambda, Eager Loading với Include, quy trình 2 bước EF (Add/Update/Remove → SaveChanges), Tag Helper ASP.NET Core (`asp-for`, `asp-action`, `asp-route-id`).
+Cú pháp LINQ lambda, Eager Loading với Include, quy trình 2 bước EF (Add/Update/Remove → SaveChanges), Tag Helper ASP.NET Core.
+
+---
+
+### Buổi 4 — Xây dựng Giao diện Quản trị (Admin Panel) Toàn diện
+
+**Mục tiêu:** Xây dựng khu quản trị hoàn chỉnh với layout riêng, CRUD đầy đủ và upload ảnh.
+
+**Đã thực hiện:**
+
+**Layout Admin (`_LayoutAdmin.cshtml`):**
+- Sidebar tối màu Bootstrap (`bg-dark`) có menu điều hướng đến các khu vực
+- Bootstrap Icons cho từng mục menu
+- `@RenderBody()` — vùng nội dung chính (chỉ gọi đúng 1 lần)
+- Áp dụng vào tất cả views admin bằng `@{ Layout = "_LayoutAdmin"; }`
+
+**Bảng điều khiển (`AdminController` + `Views/Admin/Index.cshtml`):**
+- 3 thẻ thống kê: Tổng bài viết (xanh) / Tổng danh mục (xanh lá) / Tổng thành viên (xám)
+- Bảng 5 bài viết mới nhất kèm danh mục và nút xem nhanh
+- Sử dụng `CountAsync()` và `Include().OrderByDescending().Take(5)`
+
+**Post CRUD đầy đủ (`PostController.cs`):**
+- `IWebHostEnvironment` inject để lấy đường dẫn `wwwroot`
+- `UploadImageAsync(IFormFile?)` — lưu ảnh vào `wwwroot/uploads/` với tên `Guid.NewGuid()`
+- `LoadCategoryList()` — helper đổ `SelectList` vào `ViewBag` cho dropdown
+- Create: `enctype="multipart/form-data"`, xem trước ảnh bằng `FileReader` JS
+- Edit: `AsNoTracking()` để giữ ảnh cũ khi không upload ảnh mới
+- Delete: tự động xóa file ảnh local nếu bắt đầu bằng `/uploads/`
+
+**User CRUD đầy đủ (`UserController.cs`):**
+- Create: kiểm tra username trùng bằng `AnyAsync()`, báo lỗi qua `ModelState`
+- Edit: giữ `Id` bằng `<input type="hidden" asp-for="Id" />`
+- Dropdown Role: Admin / Editor / Moderator / User
+- Badge màu phân biệt theo quyền: Admin  / Editor  / Moderator / User ⚫
+
+**Ảnh bài viết:**
+- 6 ảnh mẫu lưu tại `wwwroot/images/posts/img1.png — img6.png`
+- `DbInitializer` tự cập nhật ảnh cũ (URL ngoài) sang ảnh local khi app khởi động
+
+**Kiến thức:**  
+Layout override, `@RenderBody()` chỉ gọi 1 lần, `IFormFile` upload, `Guid.NewGuid()` tránh trùng tên file, `AsNoTracking()`, `ModelState.AddModelError()`, `SelectList` + `ViewBag`.
 
 ---
 
@@ -186,11 +237,11 @@ Users (quản trị độc lập)
 
 ## Dữ liệu mẫu (seed tự động)
 
-| Bảng | Số dòng mẫu |
-|------|-------------|
-| Categories | 5 danh mục tin tức |
-| Posts | 5 bài viết (mỗi bài thuộc 1 danh mục) |
-| Users | 5 tài khoản (Admin, Editor, Moderator, User×2) |
+| Bảng | Số dòng mẫu | Ghi chú |
+|------|-------------|---------|
+| Categories | 5 | Công nghệ, Du lịch, Thể thao, Giáo dục, Lập trình |
+| Posts | 5 | Mỗi bài thuộc 1 danh mục, ảnh local `img1–img5` |
+| Users | 5 | Admin, Editor, Moderator, User×2 |
 
 > **Lưu ý bảo mật:** Mật khẩu trong `DbInitializer` lưu thô (plain text) chỉ để học tập.  
-> Buổi 5 sẽ thay bằng hashing với ASP.NET Core Identity.
+> Buổi 5 sẽ thay bằng hashing với BCrypt hoặc ASP.NET Core Identity.
