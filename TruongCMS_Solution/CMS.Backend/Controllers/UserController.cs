@@ -1,41 +1,123 @@
-// Họ tên: Quang Văn Trường | MSV: 2123170591
-// Buổi 2: Controller quản lý thành viên — lấy dữ liệu từ SQL Server qua EF Core
-//Version: 1.2
-using CMS.Data;                          // ApplicationDbContext (lớp kết nối database)
-using Microsoft.AspNetCore.Mvc;          // Controller, IActionResult, View()
-using Microsoft.EntityFrameworkCore;     // ToListAsync() — truy vấn bất đồng bộ
+// Ho ten: Quang Van Truong || MSV: 2123170591
+// Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+// Bai thuc hanh: 4
+// Ngay thuc hien: 23/03/2026
+// Version: 1.4
+
+using CMS.Data;
+using CMS.Data.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers;
 
-/// <summary>
-/// Controller xử lý trang quản lý người dùng (bảng Users).
-/// URL mặc định: /User hoặc /User/Index
-/// </summary>
 public class UserController : Controller
 {
-    // Biến readonly: chỉ gán 1 lần trong constructor, dùng xuyên suốt các Action
     private readonly ApplicationDbContext _context;
 
-    /// <summary>
-    /// Constructor Injection (DI): ASP.NET Core tự "tiêm" DbContext vào đây
-    /// khi có request tới UserController — không cần new ApplicationDbContext() thủ công.
-    /// </summary>
     public UserController(ApplicationDbContext context)
     {
         _context = context;
     }
 
-    /// <summary>
-    /// Action Index: hiển thị danh sách thành viên.
-    /// - GET /User/Index
-    /// - Trả về View kèm danh sách User (không trả PasswordHash ra giao diện).
-    /// </summary>
+    // HELPER: do danh sach quyen han vao ViewBag cho dropdown chon Role
+    private void LoadRoleList(string? selected = null)
+    {
+        var roles = new List<string> { "Admin", "Editor", "Moderator", "User" };
+        ViewBag.RoleList = new SelectList(roles, selected);
+    }
+
+    // INDEX - danh sach thanh vien, sap xep theo Role -> FullName
+    // GET /User
     public async Task<IActionResult> Index()
     {
-        // ToListAsync: chạy câu SQL SELECT * FROM Users, map sang List<User>
-        var users = await _context.Users.ToListAsync();
+        // OrderBy Role truoc de nhom theo quyen han, sau do theo ten
+        var users = await _context.Users
+            .OrderBy(u => u.Role)
+            .ThenBy(u => u.FullName)
+            .ToListAsync();
 
-        // View(users): tìm file Views/User/Index.cshtml và truyền danh sách vào @model
         return View(users);
+    }
+
+    // CREATE - them thanh vien moi
+
+    // GET: hien form trong de nhap lieu
+    [HttpGet]
+    public IActionResult Create()
+    {
+        LoadRoleList("User"); // Mac dinh chon "User" khi mo form
+        return View();
+    }
+
+    // POST: nhan du lieu tu form, kiem tra username chua bi trung, ghi vao SQL
+    [HttpPost]
+    public async Task<IActionResult> Create(User model)
+    {
+        // Kiem tra ten dang nhap da ton tai chua (khong phan biet hoa thuong)
+        bool trungTen = await _context.Users
+            .AnyAsync(u => u.Username == model.Username);
+
+        if (trungTen)
+        {
+            // Them loi vao ModelState -> View hien thong bao do cho nguoi dung biet
+            ModelState.AddModelError("Username", "Ten dang nhap nay da ton tai, vui long chon ten khac.");
+            LoadRoleList(model.Role);
+            return View(model);
+        }
+
+        _context.Users.Add(model);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
+
+    // EDIT - sua thong tin thanh vien da co
+
+    // GET: tim thanh vien cu, do du lieu len form
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null) return NotFound();
+
+        LoadRoleList(user.Role); // Giu dung Role dang chon trong dropdown
+        return View(user);
+    }
+
+    // POST: nhan du lieu da sua, cap nhat SQL
+    [HttpPost]
+    public async Task<IActionResult> Edit(User model)
+    {
+        // Kiem tra username trung voi NGUOI KHAC (khong tinh chinh ban than)
+        bool trungTen = await _context.Users
+            .AnyAsync(u => u.Username == model.Username && u.Id != model.Id);
+
+        if (trungTen)
+        {
+            ModelState.AddModelError("Username", "Ten dang nhap nay da ton tai, vui long chon ten khac.");
+            LoadRoleList(model.Role);
+            return View(model);
+        }
+
+        _context.Users.Update(model);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
+
+    // DELETE - xoa thanh vien
+    // GET /User/Delete/5
+    public async Task<IActionResult> Delete(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
+        return RedirectToAction("Index");
     }
 }

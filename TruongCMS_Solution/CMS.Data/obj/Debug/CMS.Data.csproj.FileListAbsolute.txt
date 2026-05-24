@@ -1,6 +1,0 @@
-D:\asp.NET\TruongCMS_Solution\CMS.Data\obj\Debug\CMS.Data.csproj.AssemblyReference.cache
-D:\asp.NET\TruongCMS_Solution\CMS.Data\obj\Debug\CMS.Data.csproj.CoreCompileInputs.cache
-D:\asp.NET\TruongCMS_Solution\CMS.Data\bin\Debug\CMS.Data.dll
-D:\asp.NET\TruongCMS_Solution\CMS.Data\bin\Debug\CMS.Data.pdb
-D:\asp.NET\TruongCMS_Solution\CMS.Data\obj\Debug\CMS.Data.dll
-D:\asp.NET\TruongCMS_Solution\CMS.Data\obj\Debug\CMS.Data.pdb

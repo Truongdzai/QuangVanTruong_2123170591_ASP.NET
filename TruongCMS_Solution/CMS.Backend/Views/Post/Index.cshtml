@@ -1,54 +1,62 @@
 @*
-Quang Van Truong || 2123170591
-Buổi 3: Danh sách bài viết — badge danh mục, ảnh fallback, nút CRUD
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
 *@
 @model IEnumerable<CMS.Data.Entities.Post>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-danger mb-0">DANH SÁCH BÀI VIẾT</h2>
-        <a asp-action="Create" class="btn btn-danger">
-            + Thêm bài viết mới
-        </a>
-    </div>
+@* Ap dung layout admin co sidebar thay cho layout mac dinh *@
+@{ Layout = "_LayoutAdmin"; }
 
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    @* Fallback: nếu ImageUrl null/rỗng → dùng no-image.svg *@
-                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.svg" : item.ImageUrl)"
-                         class="card-img-top"
-                         style="height:180px;object-fit:cover"
-                         alt="@item.Title"
-                         onerror="this.src='/images/no-image.svg'" />
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-dark mb-0">DANH SACH BAI VIET</h2>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Them bai viet moi
+    </a>
+</div>
 
-                    <div class="card-body d-flex flex-column">
-                        @* Badge tên danh mục — có nhờ .Include(p => p.Category) *@
-                        <span class="badge bg-info text-dark mb-2 align-self-start">
-                            @item.Category?.Name
-                        </span>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                @* Neu khong co anh -> hien anh mac dinh, onerror phong link chet *@
+                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.svg" : item.ImageUrl)"
+                     class="card-img-top"
+                     style="height:180px; object-fit:cover"
+                     alt="@item.Title"
+                     onerror="this.src='/images/no-image.svg'" />
 
-                        <h6 class="card-title text-primary fw-bold">@item.Title</h6>
-                        <p class="card-text text-truncate text-muted small">@item.Content</p>
+                <div class="card-body d-flex flex-column">
+                    @* Badge ten danh muc - lay duoc nho .Include(p -> p.Category) trong Controller *@
+                    <span class="badge bg-info text-dark mb-2 align-self-start">
+                        @item.Category?.Name
+                    </span>
 
-                        <p class="text-muted small mt-auto mb-2">
-                            Ngày đăng: @item.CreatedDate.ToString("dd/MM/yyyy")
-                        </p>
+                    <h6 class="card-title text-primary fw-bold">@item.Title</h6>
+                    <p class="card-text text-truncate text-muted small flex-grow-1">@item.Content</p>
+                    <p class="text-muted small">Ngay dang: @item.CreatedDate.ToString("dd/MM/yyyy")</p>
 
-                        <div class="d-flex gap-1">
-                            <a asp-action="Details" asp-route-id="@item.Id"
-                               class="btn btn-outline-primary btn-sm flex-fill">Chi tiết</a>
-                            <a asp-action="Edit" asp-route-id="@item.Id"
-                               class="btn btn-outline-warning btn-sm flex-fill">Sửa</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id"
-                               class="btn btn-outline-danger btn-sm flex-fill"
-                               onclick="return confirm('Xóa bài viết này?')">Xóa</a>
-                        </div>
+                    @* 3 nut hanh dong: Chi tiet / Sua / Xoa *@
+                    <div class="d-flex gap-1 mt-auto">
+                        <a asp-action="Details" asp-route-id="@item.Id"
+                           class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="bi bi-eye"></i> Chi tiet
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id"
+                           class="btn btn-outline-warning btn-sm flex-fill">
+                            <i class="bi bi-pencil"></i> Sua
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-outline-danger btn-sm flex-fill"
+                           onclick="return confirm('Co chac chan muon xoa bai viet nay?')">
+                            <i class="bi bi-trash"></i> Xoa
+                        </a>
                     </div>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

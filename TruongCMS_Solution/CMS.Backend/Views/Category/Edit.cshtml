@@ -1,25 +1,37 @@
-@* 
-    Quang Van Truong || 2123170591 
-Buổi 3: Form chỉnh sửa danh mục *@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
+*@
 @model CMS.Data.Entities.Category
 
-<div class="container mt-4">
-    <h2 class="text-warning">CHỈNH SỬA DANH MỤC</h2>
-    <hr />
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Sua danh muc"; }
 
-    <form asp-action="Edit" method="post">
-        @* Hidden field giữ Id — QUAN TRỌNG: thiếu dòng này hệ thống không biết đang sửa dòng nào *@
-        <input type="hidden" asp-for="Id" />
+<div class="card shadow" style="max-width:600px">
+    <div class="card-header bg-warning">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> CHINH SUA DANH MUC</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            @* Hidden giu Id: QUAN TRONG - neu thieu, controller khong biet dang sua dong nao *@
+            <input type="hidden" asp-for="Id" />
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Tên danh mục:</label>
-            <input asp-for="Name" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Mô tả:</label>
-            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-warning">Cập nhật thay đổi</button>
-        <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
-    </form>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ten danh muc:</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mo ta:</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning">
+                <i class="bi bi-save"></i> Cap nhat thay doi
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Huy bo
+            </a>
+        </form>
+    </div>
 </div>

@@ -1,5 +1,5 @@
-// Lớp "trung tâm" kết nối Entity C# ↔ bảng SQL Server (Buổi 2)
-// Tương đương "người quản kho" trong giáo trình
+// BUỔI 3: TRUY VẤN LINQ & THAO TÁC DỮ LIỆU CHUYÊN SÂU
+
 
 using CMS.Data.Entities;
 using Microsoft.EntityFrameworkCore;

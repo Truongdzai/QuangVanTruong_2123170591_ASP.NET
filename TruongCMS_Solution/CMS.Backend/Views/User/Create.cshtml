@@ -1,0 +1,61 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
+*@
+@model CMS.Data.Entities.User
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Them thanh vien"; }
+
+<div class="card shadow" style="max-width:520px; margin:auto">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="bi bi-person-plus"></i> THEM THANH VIEN MOI</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ten dang nhap:</label>
+                <input asp-for="Username" class="form-control" placeholder="vd: nguyen_a" />
+                @* Hien loi neu ten dang nhap bi trung (kiem tra trong controller) *@
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mat khau:</label>
+                <input asp-for="PasswordHash" type="password" class="form-control"
+                       placeholder="Nhap mat khau..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ho va ten:</label>
+                <input asp-for="FullName" class="form-control" placeholder="vd: Nguyen Van A" />
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Quyen han:</label>
+                @* asp-items lay tu ViewBag.RoleList do controller truyen sang *@
+                <select asp-for="Role" class="form-select" asp-items="ViewBag.RoleList">
+                    <option value="">-- Chon quyen --</option>
+                </select>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Luu thanh vien
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lai danh sach
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @* Kich hoat validation phia client (kiem tra o trong khi dang nhap) *@
+    <partial name="_ValidationScriptsPartial" />
+}

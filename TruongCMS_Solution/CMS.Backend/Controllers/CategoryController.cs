@@ -1,6 +1,8 @@
-// Họ tên: Quang Văn Trường | MSV: 2123170591
-// Buổi 3: Thêm CRUD (Create, Delete, Edit) cho Category
-// Version: 1.3
+// Ho ten: Quang Van Truong || MSV: 2123170591
+// Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+// Bai thuc hanh: 4
+// Ngay thuc hien: 23/03/2026
+// Version: 1.4
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -18,44 +20,43 @@ public class CategoryController : Controller
         _context = context;
     }
 
-    // GET /Category/Index — danh sách danh mục
+    // GET /Category - hien danh sach danh muc lay tu SQL Server
     public async Task<IActionResult> Index()
     {
         var data = await _context.Categories.ToListAsync();
         return View(data);
     }
 
-    // GET /Category/Create — hiển thị form thêm mới
+    // GET /Category/Create - hien form trong de nhap danh muc moi
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST /Category/Create — nhận dữ liệu từ form và lưu vào SQL
+    // POST /Category/Create - nhan du lieu tu form va ghi vao SQL
     [HttpPost]
     public IActionResult Create(Category model)
     {
-        // Bước 1: Đăng ký vào bộ nhớ tạm của EF
+        // Buoc 1: dang ky vao bo nho tam cua EF
         _context.Categories.Add(model);
-        // Bước 2: Chốt — ghi xuống SQL Server (sinh ra câu INSERT INTO)
+        // Buoc 2: chot - ghi xuong SQL Server (sinh ra cau INSERT INTO)
         _context.SaveChanges();
 
         return RedirectToAction("Index");
     }
 
-    // GET /Category/Edit/{id} — tìm và đổ dữ liệu cũ lên form
+    // GET /Category/Edit/{id} - tim danh muc, do du lieu cu len form
     [HttpGet]
     public IActionResult Edit(int id)
     {
         var category = _context.Categories.Find(id);
-        if (category == null)
-            return NotFound();
+        if (category == null) return NotFound();
 
         return View(category);
     }
 
-    // POST /Category/Edit — nhận dữ liệu đã sửa và cập nhật SQL
+    // POST /Category/Edit - nhan du lieu da sua va cap nhat vao SQL
     [HttpPost]
     public IActionResult Edit(Category model)
     {
@@ -65,15 +66,15 @@ public class CategoryController : Controller
         return RedirectToAction("Index");
     }
 
-    // GET /Category/Delete/{id} — xóa danh mục theo id rồi về Index
+    // GET /Category/Delete/{id} - xoa danh muc theo id roi ve trang danh sach
     public IActionResult Delete(int id)
     {
         var category = _context.Categories.Find(id);
         if (category != null)
         {
-            // Bước 1: Đánh dấu "sẽ bị xóa" trong bộ nhớ tạm
+            // Danh dau "se bi xoa" trong bo nho tam
             _context.Categories.Remove(category);
-            // Bước 2: EF sinh ra câu DELETE FROM ... và gửi xuống SQL Server
+            // EF sinh ra cau DELETE FROM ... va gui xuong SQL Server
             _context.SaveChanges();
         }
 

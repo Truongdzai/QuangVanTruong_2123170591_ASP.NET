@@ -1,24 +1,37 @@
 @*
-Quang Van Truong || 2123170591
-Buổi 3: Form thêm mới danh mục *@
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
+*@
 @model CMS.Data.Entities.Category
 
-<div class="container mt-4">
-    <h2 class="text-primary">THÊM DANH MỤC MỚI</h2>
-    <hr />
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Them danh muc"; }
 
-    @* asp-action="Create": form POST tới CategoryController.Create(Category model) *@
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label class="form-label">Tên danh mục:</label>
-            @* asp-for: tự bind Name property của model, tạo name="Name" trên input *@
-            <input asp-for="Name" class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mô tả:</label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-        </div>
-        <button type="submit" class="btn btn-success">Lưu vào hệ thống</button>
-        <a asp-action="Index" class="btn btn-secondary">Hủy bỏ</a>
-    </form>
+<div class="card shadow" style="max-width:600px">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="bi bi-plus-circle"></i> THEM DANH MUC MOI</h4>
+    </div>
+    <div class="card-body">
+        @* asp-action="Create": form se POST toi CategoryController.Create(Category model) *@
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ten danh muc:</label>
+                @* asp-for="Name": tu tao name="Name" va gan gia tri Model.Name *@
+                <input asp-for="Name" class="form-control" placeholder="Nhan vao ten danh muc..." />
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mo ta:</label>
+                <textarea asp-for="Description" class="form-control" rows="3"
+                          placeholder="Mo ta ngan ve danh muc..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i> Luu vao he thong
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Huy bo
+            </a>
+        </form>
+    </div>
 </div>

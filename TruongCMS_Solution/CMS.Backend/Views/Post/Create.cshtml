@@ -1,57 +1,89 @@
 @*
-Quang Van Truong || 2123170591
-Buổi 3: Form thêm bài viết mới — có upload ảnh
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
 *@
 @model CMS.Data.Entities.Post
 
-<div class="container mt-4" style="max-width:700px">
-    <h2 class="text-danger mb-3">THÊM BÀI VIẾT MỚI</h2>
-    <hr />
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Them bai viet moi"; }
 
-    @* enctype="multipart/form-data" — BẮT BUỘC khi form có upload file *@
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+<div class="card shadow">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0"><i class="bi bi-file-earmark-plus"></i> THEM BAI VIET MOI</h4>
+    </div>
+    <div class="card-body">
+        @* enctype multipart: bat buoc khi form co upload file anh *@
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="row">
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Tiêu đề:</label>
-            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết..." />
-        </div>
+                @* Cot trai: tieu de + noi dung *@
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tieu de bai viet:</label>
+                        <input asp-for="Title" class="form-control" placeholder="Nhap tieu de..." />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Noi dung chi tiet:</label>
+                        <textarea asp-for="Content" class="form-control" rows="10"
+                                  placeholder="Viet noi dung tai day..."></textarea>
+                    </div>
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Danh mục:</label>
-            @* asp-items: render <option> từ SelectList trong ViewBag.Categories *@
-            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select">
-                <option value="">-- Chọn danh mục --</option>
-            </select>
-        </div>
+                @* Cot phai: danh muc, anh, ngay dang *@
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chuyen muc:</label>
+                        @* asp-items lay du lieu tu ViewBag.CategoryList do controller truyen sang *@
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
+                            <option value="">-- Chon danh muc --</option>
+                        </select>
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Nội dung:</label>
-            <textarea asp-for="Content" class="form-control" rows="5"
-                      placeholder="Nhập nội dung bài viết..."></textarea>
-        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Anh dai dien:</label>
+                        @* name="uploadImage" phai khop voi ten tham so IFormFile trong Controller *@
+                        <input type="file" name="uploadImage" id="uploadImage"
+                               class="form-control" accept="image/*"
+                               onchange="xemTruocAnh(this)" />
+                        <img id="anhXemTruoc" src="/images/no-image.svg"
+                             class="mt-2 rounded border"
+                             style="height:140px; object-fit:cover; width:100%" />
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Ảnh đại diện:</label>
-            <input type="file" name="imageFile" id="imageFile"
-                   class="form-control" accept="image/*"
-                   onchange="previewImage(this)" />
-            @* Preview ảnh ngay khi chọn file *@
-            <img id="imgPreview" src="/images/no-image.svg"
-                 class="mt-2 rounded border" style="height:160px;object-fit:cover;width:100%" />
-        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ngay dang:</label>
+                        @* asp-for tu lay CreatedDate tu model (da set = DateTime.Now trong controller)
+                           Khong dung them value="" vi Tag Helper se bi ghi de, gay sai gia tri *@
+                        <input asp-for="CreatedDate" type="date" class="form-control" />
+                    </div>
 
-        <button type="submit" class="btn btn-danger">Đăng bài</button>
-        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-    </form>
+                    <hr />
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-cloud-arrow-up"></i> Luu va Dang bai
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lai danh sach
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
 <script>
-    // Xem trước ảnh ngay khi người dùng chọn file — không cần upload lên server
-    function previewImage(input) {
+    // Xem truoc anh ngay khi nguoi dung chon file, khong can upload len server truoc
+    function xemTruocAnh(input) {
         if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => document.getElementById('imgPreview').src = e.target.result;
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('anhXemTruoc').src = e.target.result;
+            };
             reader.readAsDataURL(input.files[0]);
         }
     }

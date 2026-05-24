@@ -1,38 +1,77 @@
-@* View quản lý thành viên — không hiển thị PasswordHash (bảo mật) *@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 4
+    Ngay thuc hien: 23/03/2026
+    Version: 1.4
+*@
 @model IEnumerable<CMS.Data.Entities.User>
 
-<div class="container mt-4">
-    <h2 class="text-dark mb-3">QUẢN LÝ THÀNH VIÊN</h2>
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Thanh vien"; }
 
-    <table class="table table-hover shadow-sm border">
-        <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Tên đăng nhập</th>
-                <th>Họ và tên</th>
-                <th>Quyền hạn</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-people"></i> QUAN LY THANH VIEN</h4>
+    @* Nut them thanh vien moi, chuyen sang trang Create *@
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-person-plus"></i> Them thanh vien
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
                 <tr>
-                    <td>@user.Id</td>
-                    <td><strong>@user.Username</strong></td>
-                    <td>@user.FullName</td>
-                    <td>
-                        @* Badge màu đỏ cho Admin, xanh cho role khác *@
-                        @if (user.Role is "Admin" or "Administrator")
-                        {
-                            <span class="badge bg-danger">@user.Role</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-info text-dark">@user.Role</span>
-                        }
-                    </td>
+                    <th style="width:60px">ID</th>
+                    <th>Ten dang nhap</th>
+                    <th>Ho va ten</th>
+                    <th style="width:130px" class="text-center">Quyen han</th>
+                    <th style="width:140px" class="text-center">Thao tac</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@user.Id</td>
+                        <td><strong>@user.Username</strong></td>
+                        <td>@user.FullName</td>
+                        <td class="text-center">
+                            @* Mau badge phan biet theo quyen han *@
+                            @if (user.Role == "Admin")
+                            {
+                                <span class="badge bg-danger">@user.Role</span>
+                            }
+                            else if (user.Role == "Editor")
+                            {
+                                <span class="badge bg-warning text-dark">@user.Role</span>
+                            }
+                            else if (user.Role == "Moderator")
+                            {
+                                <span class="badge bg-info text-dark">@user.Role</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@user.Role</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@user.Id"
+                               class="btn btn-sm btn-warning me-1">
+                                <i class="bi bi-pencil"></i> Sua
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@user.Id"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Xoa thanh vien @user.Username?')">
+                                <i class="bi bi-trash"></i> Xoa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">
+        Tong cong: @Model.Count() thanh vien
+    </div>
 </div>

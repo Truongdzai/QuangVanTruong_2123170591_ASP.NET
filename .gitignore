@@ -1,3 +1,22 @@
-.vs/ 
-[Ob]bj/ 
+# Visual Studio (bao gom Copilot AI snapshots, chat history)
+.vs/
+
+# Build artifacts - khong commit len git
+[Ob]bj/
 [Bb]in/
+*.user
+*.suo
+
+# Claude Code AI tool - khong commit
+.claude/
+
+# Node.js / Frontend
+node_modules/
+dist/
+
+# Temp lock files tu Word / PowerPoint
+~$*
+
+# File upload cua nguoi dung - chi giu .gitkeep
+TruongCMS_Solution/CMS.Backend/wwwroot/uploads/*
+!TruongCMS_Solution/CMS.Backend/wwwroot/uploads/.gitkeep

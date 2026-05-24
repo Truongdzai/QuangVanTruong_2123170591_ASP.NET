@@ -1,6 +1,8 @@
-// Họ tên : Quang Văn Trường | MSV: 2123170591
-// Buổi 3 : TRUY VẤN LINQ & THAO TÁC DỮ LIỆU CHUYÊN SÂU
-// Version: 1.3 — thêm CRUD đầy đủ + upload ảnh local
+// Ho ten: Quang Van Truong || MSV: 2123170591
+// Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+// Bai thuc hanh: 4
+// Ngay thuc hien: 23/03/2026
+// Version: 1.4
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -13,7 +15,7 @@ namespace CMS.Backend.Controllers;
 public class PostController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly IWebHostEnvironment _env; // Dùng để lấy đường dẫn wwwroot
+    private readonly IWebHostEnvironment _env; // de lay duong dan tuyet doi cua wwwroot
 
     public PostController(ApplicationDbContext context, IWebHostEnvironment env)
     {
@@ -21,48 +23,47 @@ public class PostController : Controller
         _env = env;
     }
 
-    // ─── HELPER: lưu file ảnh vào wwwroot/images/posts/ ───────────────────────
-    // Trả về đường dẫn tương đối (/images/posts/xxx.jpg) hoặc null nếu không có file
-    private async Task<string?> SaveImageAsync(IFormFile? file)
+    // HELPER: xu ly upload file anh, tra ve duong dan tuong doi
+    private async Task<string?> UploadImageAsync(IFormFile? file)
     {
         if (file == null || file.Length == 0) return null;
 
-        // Đảm bảo thư mục tồn tại
-        var folder = Path.Combine(_env.WebRootPath, "images", "posts");
-        Directory.CreateDirectory(folder);
+        // Thu muc luu anh: wwwroot/uploads
+        string folder = Path.Combine(_env.WebRootPath, "uploads");
+        if (!Directory.Exists(folder))
+            Directory.CreateDirectory(folder);
 
-        // Tên file ngẫu nhiên để tránh trùng lặp
-        var ext      = Path.GetExtension(file.FileName).ToLowerInvariant();
-        var fileName = $"{Guid.NewGuid()}{ext}";
-        var filePath = Path.Combine(folder, fileName);
+        // Ten file ngau nhien de tranh trung voi file cua nguoi khac
+        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        string filePath = Path.Combine(folder, fileName);
 
+        // Chep du lieu tu trinh duyet xuong server
         using var stream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(stream);
 
-        // Trả về URL tương đối dùng trong thẻ <img src="...">
-        return $"/images/posts/{fileName}";
+        // Tra ve duong dan tuong doi dung trong the img src
+        return "/uploads/" + fileName;
     }
 
-    // ─── HELPER: đổ danh sách Category vào ViewBag để dùng trong dropdown ─────
-    private void LoadCategoryDropdown(int? selectedId = null)
+    // HELPER: do danh sach danh muc vao ViewBag de dung trong dropdown
+    private void LoadCategoryList(int? selectedId = null)
     {
-        ViewBag.Categories = new SelectList(
+        ViewBag.CategoryList = new SelectList(
             _context.Categories.OrderBy(c => c.Name).ToList(),
             "Id", "Name", selectedId);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // INDEX — danh sách bài viết, hỗ trợ lọc theo danh mục
-    // GET /Post          → lấy tất cả
-    // GET /Post/Index/5  → lọc theo CategoryId = 5
-    // ──────────────────────────────────────────────────────────────────────────
+    // INDEX - danh sach bai viet, co loc theo danh muc
+    // GET /Post          -> lay tat ca
+    // GET /Post/Index/5  -> loc bai thuoc CategoryId = 5
     public async Task<IActionResult> Index(int? id)
     {
-        var query = _context.Posts
-            .Include(p => p.Category); // Eager Loading: tránh null khi gọi p.Category.Name
+        // .Include(p -> p.Category): lay kem ten danh muc, tranh null khi hien len view
+        var query = _context.Posts.Include(p => p.Category);
 
         if (id != null)
         {
+            // .Where: chi lay bai co CategoryId bang voi id truyen vao URL
             var filtered = await query
                 .Where(p => p.CategoryId == id)
                 .OrderByDescending(p => p.CreatedDate)
@@ -70,81 +71,87 @@ public class PostController : Controller
             return View(filtered);
         }
 
+        // Khong co id -> lay het, moi nhat len dau
         var all = await query
             .OrderByDescending(p => p.CreatedDate)
             .ToListAsync();
-
         return View(all);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // DETAILS — chi tiết 1 bài viết
+    // DETAILS - xem chi tiet 1 bai viet
     // GET /Post/Details/5
-    // ──────────────────────────────────────────────────────────────────────────
     public async Task<IActionResult> Details(int id)
     {
+        // .Include lay kem danh muc de hien ten tren trang chi tiet
         var post = await _context.Posts
-            .Include(p => p.Category)      // Join bảng Category lấy tên danh mục
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (post == null) return NotFound();
         return View(post);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // CREATE — thêm bài viết mới
-    // ──────────────────────────────────────────────────────────────────────────
+    // CREATE - them bai viet moi
+
+    // GET: hien form trong de nhap lieu, do dropdown danh muc
     [HttpGet]
     public IActionResult Create()
     {
-        LoadCategoryDropdown();
-        return View();
+        LoadCategoryList();
+        // Truyen model voi CreatedDate = hom nay de input date hien dung gia tri mac dinh
+        return View(new Post { CreatedDate = DateTime.Now });
     }
 
+    // POST: nhan du lieu tu form, xu ly upload anh, ghi vao SQL
     [HttpPost]
-    public async Task<IActionResult> Create(Post model, IFormFile? imageFile)
+    public async Task<IActionResult> Create(Post model, IFormFile? uploadImage)
     {
-        // Xử lý upload ảnh; nếu không upload giữ null → View dùng ảnh mặc định
-        model.ImageUrl = await SaveImageAsync(imageFile);
+        // Neu co chon file anh thi upload, nguoc lai giu null -> hien anh mac dinh
+        model.ImageUrl = await UploadImageAsync(uploadImage);
         model.CreatedDate = DateTime.Now;
 
+        // Buoc 1: them bai viet vao bo nho tam EF
         _context.Posts.Add(model);
+        // Buoc 2: ghi xuong SQL Server
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index");
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // EDIT — chỉnh sửa bài viết
-    // ──────────────────────────────────────────────────────────────────────────
+    // EDIT - sua bai viet da co
+
+    // GET: tim bai viet cu, do du lieu len form de nguoi dung sua
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var post = await _context.Posts.FindAsync(id);
         if (post == null) return NotFound();
 
-        LoadCategoryDropdown(post.CategoryId);
+        // Giu danh muc dang chon hien len dung vi tri trong dropdown
+        LoadCategoryList(post.CategoryId);
         return View(post);
     }
 
+    // POST: nhan du lieu da sua, cap nhat SQL
     [HttpPost]
-    public async Task<IActionResult> Edit(Post model, IFormFile? imageFile)
+    public async Task<IActionResult> Edit(Post model, IFormFile? uploadImage)
     {
-        // Chỉ thay ảnh khi người dùng có upload file mới
-        if (imageFile != null && imageFile.Length > 0)
+        if (uploadImage != null && uploadImage.Length > 0)
         {
-            // Xóa ảnh cũ nếu là ảnh local (không xóa URL ngoài như picsum)
-            if (!string.IsNullOrEmpty(model.ImageUrl)
-                && model.ImageUrl.StartsWith("/images/"))
-            {
-                var oldPath = Path.Combine(_env.WebRootPath, model.ImageUrl.TrimStart('/'));
-                if (System.IO.File.Exists(oldPath))
-                    System.IO.File.Delete(oldPath);
-            }
-
-            model.ImageUrl = await SaveImageAsync(imageFile);
+            // Co file anh moi -> upload len server, cap nhat ImageUrl
+            model.ImageUrl = await UploadImageAsync(uploadImage);
         }
-        // Nếu không upload file mới → giữ nguyên ImageUrl cũ (đã bind từ hidden field)
+        else
+        {
+            // Khong upload anh moi -> giu nguyen anh cu trong DB
+            // Dung AsNoTracking de doc ma khong "chiem" doi tuong, tranh xung dot voi Update
+            var oldPost = await _context.Posts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == model.Id);
+
+            if (oldPost != null && string.IsNullOrEmpty(model.ImageUrl))
+                model.ImageUrl = oldPost.ImageUrl;
+        }
 
         _context.Posts.Update(model);
         await _context.SaveChangesAsync();
@@ -152,18 +159,15 @@ public class PostController : Controller
         return RedirectToAction("Index");
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // DELETE — xóa bài viết
+    // DELETE - xoa bai viet
     // GET /Post/Delete/5
-    // ──────────────────────────────────────────────────────────────────────────
     public async Task<IActionResult> Delete(int id)
     {
         var post = await _context.Posts.FindAsync(id);
         if (post != null)
         {
-            // Xóa file ảnh local nếu có
-            if (!string.IsNullOrEmpty(post.ImageUrl)
-                && post.ImageUrl.StartsWith("/images/"))
+            // Xoa file anh local (neu la anh upload cua chinh minh, khong xoa URL ngoai)
+            if (!string.IsNullOrEmpty(post.ImageUrl) && post.ImageUrl.StartsWith("/uploads/"))
             {
                 var imgPath = Path.Combine(_env.WebRootPath, post.ImageUrl.TrimStart('/'));
                 if (System.IO.File.Exists(imgPath))

@@ -1,56 +1,53 @@
-// File khởi động ứng dụng ASP.NET Core (thay cho Startup.cs ở .NET cũ)
-// Buổi 2: đăng ký EF Core, chạy Migration, nạp dữ liệu mẫu
+// Ho ten: Quang Van Truong || MSV: 2123170591
+// Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+// Bai thuc hanh: 4
+// Ngay thuc hien: 23/03/2026
+// Version: 1.4
 
 using CMS.Data;
 using Microsoft.EntityFrameworkCore;
 
-// Tạo builder — đọc appsettings.json, đăng ký dịch vụ
 var builder = WebApplication.CreateBuilder(args);
 
-// --- ĐĂNG KÝ DỊCH VỤ (Dependency Injection) ---
-
-// Đăng ký DbContext: mỗi request HTTP sẽ có 1 instance ApplicationDbContext
-// Connection string lấy từ appsettings.json → "DefaultConnection"
+// Dang ky DbContext: moi request se co 1 instance ApplicationDbContext
+// Connection string lay tu appsettings.json -> "DefaultConnection"
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Đăng ký MVC (Controller + View)
+// Dang ky MVC (Controller + Razor View)
 builder.Services.AddControllersWithViews();
 
-// Build app — sau bước này không thêm service được nữa
 var app = builder.Build();
 
-// --- KHỞI TẠO DATABASE KHI APP CHẠY ---
+// Khoi tao database khi app chay lan dau
 using (var scope = app.Services.CreateScope())
 {
-    // Lấy DbContext từ DI container trong scope tạm
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    // Migrate: áp dụng migration → tạo/cập nhật bảng trong TruongCMS_DB
+    // Migrate: tao/cap nhat bang trong SQL Server theo Migration
     db.Database.Migrate();
 
-    // Seed: nạp dữ liệu mẫu nếu bảng Categories còn trống
+    // Seed: them du lieu mau neu chua co
     DbInitializer.Seed(db);
 }
 
-// --- PIPELINE XỬ LÝ HTTP REQUEST ---
-
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error"); // Production: bắt lỗi → trang Error
-    app.UseHsts();                          // Bảo mật HTTPS
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
-app.UseHttpsRedirection();  // Chuyển HTTP → HTTPS
-app.UseRouting();           // Phân tích URL → chọn Controller/Action
-app.UseAuthorization();     // Kiểm tra quyền (Buổi 5 sẽ dùng nhiều hơn)
-app.MapStaticAssets();      // File tĩnh: css, js, ảnh trong wwwroot
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
 
-// Route mặc định: {controller}/{action}/{id?}
-// Ví dụ: /Post/Details/1 → PostController.Details(1)
+// Cho phep phuc vu file tinh (css, js, anh, uploads) tu wwwroot
+app.MapStaticAssets();
+
+// Route mac dinh: /Controller/Action/{id?}
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.Run(); // Bắt đầu lắng nghe request (F5)
+app.Run();
