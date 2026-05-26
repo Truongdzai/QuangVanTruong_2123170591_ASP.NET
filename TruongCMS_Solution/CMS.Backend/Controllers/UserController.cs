@@ -6,12 +6,14 @@
 
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers;
 
+[Authorize(Roles = "Admin")] // Buoi 5: Chi Admin moi quan ly duoc thanh vien
 public class UserController : Controller
 {
     private readonly ApplicationDbContext _context;

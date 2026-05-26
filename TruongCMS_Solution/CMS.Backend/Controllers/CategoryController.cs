@@ -6,11 +6,13 @@
 
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers;
 
+[Authorize] // Buoi 5: Bat buoc phai dang nhap moi duoc vao
 public class CategoryController : Controller
 {
     private readonly ApplicationDbContext _context;

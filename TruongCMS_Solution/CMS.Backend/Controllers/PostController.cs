@@ -6,12 +6,14 @@
 
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers;
 
+[Authorize] // Buoi 5: Bat buoc phai dang nhap moi duoc vao
 public class PostController : Controller
 {
     private readonly ApplicationDbContext _context;

@@ -1,10 +1,11 @@
 // Ho ten: Quang Van Truong || MSV: 2123170591
 // Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
-// Bai thuc hanh: 4
-// Ngay thuc hien: 23/03/2026
-// Version: 1.4
+// Bai thuc hanh: 5
+// Ngay thuc hien: 26/05/2026
+// Version: 1.5
 
 using CMS.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Dang ky MVC (Controller + Razor View)
 builder.Services.AddControllersWithViews();
+
+// Buoi 5: Khai bao dich vu xac thuc Cookie
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";           // Chua dang nhap -> ve trang nay
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Khong du quyen -> ve trang nay
+    });
 
 var app = builder.Build();
 
@@ -39,7 +48,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseAuthorization();
+app.UseAuthentication(); // Buoi 5: Kiem tra "Anh la ai?" (doc Cookie)
+app.UseAuthorization();  // Buoi 5: Kiem tra "Anh duoc lam gi?" (kiem tra quyen)
 
 // Cho phep phuc vu file tinh (css, js, anh, uploads) tu wwwroot
 app.MapStaticAssets();
