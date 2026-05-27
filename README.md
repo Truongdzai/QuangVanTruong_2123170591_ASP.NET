@@ -1,4 +1,4 @@
-# TruongCMS — Đồ án CMS Full-Stack ASP.NET Core
+# TruongCMS —  ASP.NET Core
 
 **Họ tên:** Quang Văn Trường | **MSV:** 2123170591  
 **Môn học:** Chuyên đề ASP.NET Core | **Giảng viên:** Nguyễn Cao Thái  
@@ -24,31 +24,47 @@ TruongCMS_Solution/
 │   ├── DbInitializer.cs             # Seed dữ liệu mẫu lần đầu
 │   └── Migrations/
 │
-├── CMS.Backend/                     # Lớp xử lý — Controllers + Views (MVC)
+├── CMS.Backend/                     # Lớp xử lý — Controllers + Views (MVC) + Web API
 │   ├── Controllers/
-│   │   ├── AdminController.cs       # [MỚI B4] Bảng điều khiển thống kê
+│   │   ├── — MVC Controllers (trả về Views) —
+│   │   ├── AdminController.cs       # [B4] Bảng điều khiển; [B6] thêm thống kê thương mại
 │   │   ├── HomeController.cs        # Trang chủ — 3 bài mới nhất
-│   │   ├── CategoryController.cs    # CRUD danh mục
+│   │   ├── AccountController.cs     # [B5] Login / Logout / AccessDenied
+│   │   ├── CategoryController.cs    # CRUD danh mục tin tức
 │   │   ├── PostController.cs        # CRUD bài viết + upload ảnh
-│   │   └── UserController.cs        # CRUD thành viên
+│   │   ├── UserController.cs        # CRUD thành viên quản trị
+│   │   ├── CategoryProductController.cs  # [B6] CRUD danh mục sản phẩm
+│   │   ├── ProductController.cs     # [B6] CRUD sản phẩm + upload ảnh
+│   │   ├── CustomerController.cs    # [B6] Xem & xóa khách hàng
+│   │   ├── OrderController.cs       # [B6] Xem, cập nhật trạng thái & xóa đơn hàng
+│   │   ├── — API Controllers (trả về JSON, kế thừa ControllerBase) —
+│   │   ├── PostsController.cs       # [B6] GET /api/posts
+│   │   ├── ProductsController.cs    # [B6] GET /api/products
+│   │   ├── CategoriesProductsController.cs  # [B6] GET /api/CategoriesProducts
+│   │   └── OrdersController.cs      # [B6] POST /api/Orders
 │   ├── Views/
 │   │   ├── Shared/
 │   │   │   ├── _Layout.cshtml       # Layout trang công khai
-│   │   │   └── _LayoutAdmin.cshtml  # [MỚI B4] Layout khu quản trị (dark sidebar)
+│   │   │   └── _LayoutAdmin.cshtml  # [B4] Layout khu quản trị (dark sidebar)
+│   │   ├── Account/                 # [B5] Login.cshtml, AccessDenied.cshtml
 │   │   ├── Admin/
-│   │   │   └── Index.cshtml         # [MỚI B4] Bảng điều khiển
+│   │   │   └── Index.cshtml         # [B4+B6] Bảng điều khiển 7 thẻ + 2 bảng
 │   │   ├── Home/Index.cshtml        # Trang chủ công khai
 │   │   ├── Category/                # Index, Create, Edit
 │   │   ├── Post/                    # Index, Create, Edit, Details
-│   │   └── User/                    # [CẬP NHẬT B4] Index, Create, Edit
+│   │   ├── User/                    # Index, Create, Edit
+│   │   ├── CategoryProduct/         # [B6] Index, Create, Edit
+│   │   ├── Product/                 # [B6] Index, Create, Edit
+│   │   ├── Customer/                # [B6] Index, Details
+│   │   └── Order/                   # [B6] Index, Details
 │   ├── wwwroot/
 │   │   ├── images/
 │   │   │   ├── no-image.svg         # Ảnh thay thế khi lỗi
-│   │   │   └── posts/               # [MỚI B4] img1.png — img6.png
-│   │   └── uploads/                 # Ảnh do admin upload (không commit)
+│   │   │   └── posts/               # [B4] img1.png — img6.png
+│   │   └── uploads/                 # Ảnh do admin upload 
 │   └── Program.cs
 │
-├── cms.frontend/                    # Lớp giao diện — ReactJS (buổi 7–9)
+├── cms.frontend/                    # Lớp giao diện — ReactJS 
 └── script/
     └── 01_CreateTables.sql          # Script tạo bảng thủ công
 ```
@@ -103,21 +119,55 @@ Hoặc nhấn **F5** trong Visual Studio. Ứng dụng tự seed dữ liệu m�
 | `/` | Trang chủ — hiển thị 3 bài viết mới nhất |
 | `/Post/Details/{id}` | Chi tiết một bài viết |
 
+### Xác thực (`[B5]`)
+
+| URL | Chức năng |
+|-----|-----------|
+| `/Account/Login` | Form đăng nhập |
+| `/Account/Logout` | Đăng xuất, xóa Cookie |
+| `/Account/AccessDenied` | Trang thông báo không đủ quyền |
+
 ### Khu quản trị Admin (`_LayoutAdmin` — dark sidebar)
 
 | URL | Chức năng |
 |-----|-----------|
-| `/Admin` | **Bảng điều khiển** — thống kê bài viết, danh mục, thành viên |
-| `/Category` | Danh sách danh mục |
-| `/Category/Create` | Thêm danh mục mới |
+| `/Admin` | **Bảng điều khiển** — 7 thẻ thống kê + 5 bài/đơn mới nhất |
+| `/Category` | Danh sách danh mục tin tức |
+| `/Category/Create` | Thêm danh mục |
 | `/Category/Edit/{id}` | Sửa danh mục |
 | `/Post` | Danh sách bài viết |
 | `/Post/Create` | Thêm bài viết + upload ảnh |
 | `/Post/Edit/{id}` | Sửa bài viết |
 | `/Post/Details/{id}` | Xem chi tiết bài viết |
 | `/User` | Danh sách thành viên |
-| `/User/Create` | Thêm thành viên mới |
-| `/User/Edit/{id}` | Sửa thông tin thành viên |
+| `/User/Create` | Thêm thành viên |
+| `/User/Edit/{id}` | Sửa thành viên |
+| `/CategoryProduct` | **[B6]** Danh sách danh mục sản phẩm |
+| `/CategoryProduct/Create` | **[B6]** Thêm danh mục sản phẩm |
+| `/CategoryProduct/Edit/{id}` | **[B6]** Sửa danh mục sản phẩm |
+| `/Product` | **[B6]** Danh sách sản phẩm |
+| `/Product/Create` | **[B6]** Thêm sản phẩm + upload ảnh |
+| `/Product/Edit/{id}` | **[B6]** Sửa sản phẩm |
+| `/Customer` | **[B6]** Danh sách khách hàng |
+| `/Customer/Details/{id}` | **[B6]** Hồ sơ khách hàng + lịch sử đơn hàng |
+| `/Order` | **[B6]** Danh sách đơn hàng |
+| `/Order/Details/{id}` | **[B6]** Chi tiết đơn hàng + cập nhật trạng thái |
+
+### Web API REST (`[B6]` — JSON, dùng cho ReactJS)
+
+| Method | URL | Mô tả |
+|--------|-----|-------|
+| GET | `/api/posts` | Danh sách bài viết (tóm tắt) |
+| GET | `/api/posts/{id}` | Chi tiết bài viết |
+| GET | `/api/posts/category/{categoryId}` | Lọc bài viết theo danh mục |
+| GET | `/api/products` | Danh sách sản phẩm |
+| GET | `/api/products/{id}` | Chi tiết sản phẩm |
+| GET | `/api/products/categoryproduct/{id}` | Lọc sản phẩm theo danh mục |
+| GET | `/api/CategoriesProducts` | Danh sách danh mục sản phẩm |
+| GET | `/api/CategoriesProducts/{id}` | Chi tiết danh mục sản phẩm |
+| POST | `/api/Orders` | Đặt hàng mới (nhận `OrderInputDTO` JSON) |
+
+Tài liệu API tự động tại: **`/swagger`**
 
 ---
 
@@ -225,6 +275,126 @@ Layout override, `@RenderBody()` chỉ gọi 1 lần, `IFormFile` upload, `Guid.
 
 ---
 
+### Buổi 5 — Bảo mật & Phân quyền (Security & Identity)
+
+**Mục tiêu:** Bảo vệ khu quản trị bằng Cookie Authentication và phân quyền theo Role.
+
+**Đã thực hiện:**
+
+**Đăng ký dịch vụ xác thực (`Program.cs`):**
+- `AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)` — khai báo cơ chế xác thực Cookie
+- `LoginPath = "/Account/Login"` — tự động chuyển hướng khi chưa đăng nhập
+- `AccessDeniedPath = "/Account/AccessDenied"` — tự động chuyển hướng khi không đủ quyền
+- `app.UseAuthentication()` → `app.UseAuthorization()` — thứ tự middleware quan trọng
+
+**`AccountController` (mới):**
+- `GET /Account/Login` → hiển thị form, nếu đã đăng nhập thì chuyển thẳng vào Admin
+- `POST /Account/Login` → tìm user trong DB, tạo `ClaimsPrincipal` (họ tên, username, role), gọi `SignInAsync()` để lưu Cookie
+- `GET /Account/Logout` → gọi `SignOutAsync()`, về trang Login
+- `GET /Account/AccessDenied` → trang thông báo không đủ quyền
+
+**Claims — "Chứng minh nhân dân số" của người dùng:**
+```csharp
+var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.Username),
+    new Claim(ClaimTypes.Role, user.Role),   // Admin / Editor / Moderator / User
+    new Claim("FullName", user.FullName)
+};
+```
+
+**Bảo vệ các Controller:**
+- `[Authorize]` trên class — toàn bộ action yêu cầu đăng nhập
+- `[Authorize(Roles = "Admin")]` — chỉ Admin mới được thực hiện (VD: xóa đơn hàng)
+
+**Dữ liệu đăng nhập mẫu:**
+
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `admin123` | Admin |
+| `editor` | `editor123` | Editor |
+
+**Kiến thức:**  
+Cookie Authentication, Claims-based identity, `ClaimsPrincipal`, `SignInAsync`/`SignOutAsync`, `[Authorize]`, thứ tự middleware `UseAuthentication` -> `UseAuthorization`.
+
+---
+
+### Buổi 6 — Web API, CRUD Thương mại điện tử, Swagger & CORS
+
+**Mục tiêu:** Xây dựng REST API cho ReactJS frontend, hoàn thiện CRUD thương mại điện tử, tích hợp Swagger và cấu hình CORS.
+
+**Đã thực hiện:**
+
+**1. REST API Controllers (`[ApiController]` + `ControllerBase`):**
+
+Khác biệt so với MVC Controller:
+| | MVC Controller | API Controller |
+|-|---------------|----------------|
+| Kế thừa | `Controller` | `ControllerBase` |
+| Trả về | View (HTML) | JSON |
+| Attribute | (không bắt buộc) | `[ApiController]` |
+| Route | `[Route("api/[controller]")]` | `[Route("api/[controller]")]` |
+
+Các API đã xây dựng:
+- **`PostsController`**: `GET /api/posts`, `GET /api/posts/{id}`, `GET /api/posts/category/{categoryId}`
+- **`ProductsController`**: `GET /api/products`, `GET /api/products/{id}`, `GET /api/products/categoryproduct/{id}`
+- **`CategoriesProductsController`**: `GET /api/CategoriesProducts`, `GET /api/CategoriesProducts/{id}`
+- **`OrdersController`**: `POST /api/Orders` — nhận `OrderInputDTO` từ body JSON, tạo đơn hàng mới, trả về `201 Created`
+
+Kỹ thuật Projection (got tia) — chỉ trả về các trường cần thiết:
+```csharp
+.Select(p => new { p.Id, p.Title, p.ImageUrl, CategoryName = p.Category.Name })
+```
+
+**2. Swagger (tài liệu API tự động):**
+```csharp
+// Program.cs — đăng ký
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Program.cs — kích hoạt middleware
+app.UseSwagger();
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TruongCMS Web API v1");
+    c.RoutePrefix = "swagger";
+});
+```
+Truy cập tại: `https://localhost:{port}/swagger`
+
+**3. CORS (Cross-Origin Resource Sharing):**
+```csharp
+// Đăng ký — mở cổng cho ReactJS (port khác) kết nối
+builder.Services.AddCors(options =>
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+// Middleware — phải đặt sau UseRouting, trước UseAuthentication
+app.UseCors("AllowAll");
+```
+
+**4. MVC Controllers mới (quản trị thương mại):**
+
+- **`ProductController`**: CRUD sản phẩm + upload ảnh (giống `PostController`)
+- **`CategoryProductController`**: CRUD danh mục sản phẩm
+- **`CustomerController`**: Index (danh sách + số đơn), Details (`ThenInclude` 3 cấp), Delete (`[Authorize(Roles = "Admin")]`)
+- **`OrderController`**: Index, Details, `POST /Order/UpdateStatus` (cập nhật trạng thái 0→1→2), Delete (`Admin only`)
+
+**5. Mở rộng bảng điều khiển Admin:**
+- Từ 3 thẻ (B4) → 7 thẻ: Bài viết (xanh), Danh mục (xanh lá), Thành viên (xám), Sản phẩm (tím), Khách hàng (cyan), Tổng đơn (đen), Đơn chờ (vàng)
+- Bảng "5 đơn hàng mới nhất" (badge: Chờ/Giao/Xong) bên cạnh "5 bài viết mới nhất" — layout 2 cột
+
+**Thứ tự middleware hoàn chỉnh:**
+```
+UseRouting -> UseCors -> UseSwagger -> UseSwaggerUI
+-> UseAuthentication -> UseAuthorization -> MapStaticAssets
+-> MapControllers (API) -> MapControllerRoute (MVC)
+```
+
+**Kiến thức:**  
+`[ApiController]` vs `Controller`, `ControllerBase`, HTTP verbs (`HttpGet`/`HttpPost`), `[FromBody]`, DTO, `Ok()`/`NotFound()`/`StatusCode()`, Swagger/OpenAPI, CORS policy, `ThenInclude` cho Eager Loading 3 cấp, phân quyền theo Role với `[Authorize(Roles = "Admin")]`.
+
+---
+
 ## Sơ đồ quan hệ (ERD tóm tắt)
 
 ```
@@ -242,6 +412,11 @@ Users (quản trị độc lập)
 | Categories | 5 | Công nghệ, Du lịch, Thể thao, Giáo dục, Lập trình |
 | Posts | 5 | Mỗi bài thuộc 1 danh mục, ảnh local `img1–img5` |
 | Users | 5 | Admin, Editor, Moderator, User×2 |
+| CategoriesProducts | 3 | Áo, Quần, Giày dép |
+| Products | 6 | Mỗi sản phẩm thuộc 1 danh mục sản phẩm |
+| Customers | 3 | Khách hàng mẫu |
+| Orders | 4 | Trạng thái: Chờ (0), Đang giao (1), Hoàn thành (2) |
 
 > **Lưu ý bảo mật:** Mật khẩu trong `DbInitializer` lưu thô (plain text) chỉ để học tập.  
-> Buổi 5 sẽ thay bằng hashing với BCrypt hoặc ASP.NET Core Identity.
+> Trong môi trường thực tế phải hash bằng BCrypt hoặc ASP.NET Core Identity.  
+> CORS `AllowAnyOrigin()` chỉ dùng trong môi trường học — thực tế phải chỉ rõ domain cụ thể.
