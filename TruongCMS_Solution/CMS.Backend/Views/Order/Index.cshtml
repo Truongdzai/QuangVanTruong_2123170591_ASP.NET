@@ -1,0 +1,93 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
+*@
+@model IEnumerable<CMS.Data.Entities.Order>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Don hang"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-bag-check"></i> QUAN LY DON HANG</h4>
+    <div>
+        <span class="badge bg-warning text-dark me-1">
+            Cho duyet: @Model.Count(o => o.Status == 0)
+        </span>
+        <span class="badge bg-info text-dark me-1">
+            Dang giao: @Model.Count(o => o.Status == 1)
+        </span>
+        <span class="badge bg-success">
+            Hoan thanh: @Model.Count(o => o.Status == 2)
+        </span>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:70px">Ma don</th>
+                    <th>Khach hang</th>
+                    <th style="width:150px">Ngay dat hang</th>
+                    <th style="width:90px" class="text-center">So SP</th>
+                    <th>Ghi chu</th>
+                    <th style="width:120px" class="text-center">Trang thai</th>
+                    <th style="width:120px" class="text-center">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td class="fw-bold text-primary">#@order.Id</td>
+                        <td>
+                            @if (order.Customer != null)
+                            {
+                                <div class="fw-bold">@order.Customer.FullName</div>
+                                <small class="text-muted">@order.Customer.Phone</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">ID: @order.CustomerId</span>
+                            }
+                        </td>
+                        <td class="small">@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary">@order.OrderDetails.Count</span>
+                        </td>
+                        <td class="text-muted small">@order.Notes</td>
+                        <td class="text-center">
+                            @switch (order.Status)
+                            {
+                                case 0: <span class="badge bg-warning text-dark">Cho duyet</span> break;
+                                case 1: <span class="badge bg-info text-dark">Dang giao</span> break;
+                                case 2: <span class="badge bg-success">Hoan thanh</span> break;
+                                default: <span class="badge bg-secondary">?</span> break;
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@order.Id"
+                               class="btn btn-sm btn-primary me-1">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@order.Id"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Xoa don hang #@order.Id?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">
+        Tong cong: @Model.Count() don hang
+    </div>
+</div>

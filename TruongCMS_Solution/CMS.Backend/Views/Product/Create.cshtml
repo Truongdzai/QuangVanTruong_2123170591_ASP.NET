@@ -1,0 +1,90 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
+*@
+@model CMS.Data.Entities.Product
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Them san pham moi"; }
+
+<div class="card shadow">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="bi bi-box-seam"></i> THEM SAN PHAM MOI</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="row">
+
+                @* Cot trai: thong tin chinh *@
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ten san pham: <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Vi du: Dam da hoi dang xoe..." required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mo ta chi tiet:</label>
+                        <textarea asp-for="Description" class="form-control" rows="5"
+                                  placeholder="Mo ta chat lieu, kich thuoc, phong cach..."></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Gia ban (VND): <span class="text-danger">*</span></label>
+                            <input asp-for="Price" type="number" min="0" step="1000"
+                                   class="form-control" placeholder="Vi du: 350000" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">So luong ton kho:</label>
+                            <input asp-for="StockQuantity" type="number" min="0"
+                                   class="form-control" placeholder="Vi du: 50" />
+                        </div>
+                    </div>
+                </div>
+
+                @* Cot phai: danh muc + anh *@
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Danh muc san pham: <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryProductId" class="form-select"
+                                asp-items="ViewBag.CategoryProductList">
+                            <option value="">-- Chon danh muc --</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Anh san pham:</label>
+                        <input type="file" name="uploadImage" id="uploadImage"
+                               class="form-control" accept="image/*"
+                               onchange="xemTruocAnh(this)" />
+                        <img id="anhXemTruoc" src="/images/no-image.svg"
+                             class="mt-2 rounded border"
+                             style="height:150px;object-fit:cover;width:100%" />
+                    </div>
+                    <hr />
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-cloud-arrow-up"></i> Luu san pham
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lai
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function xemTruocAnh(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('anhXemTruoc').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+}

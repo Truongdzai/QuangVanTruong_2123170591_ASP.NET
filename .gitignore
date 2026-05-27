@@ -1,4 +1,5 @@
-#QuangVanTruong
+# Visual Studio
+.vs/
 
 # Build artifacts - khong commit len git
 [Ob]bj/

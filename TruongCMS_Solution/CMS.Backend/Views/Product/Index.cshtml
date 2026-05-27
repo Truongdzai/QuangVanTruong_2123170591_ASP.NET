@@ -1,0 +1,83 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
+*@
+@model IEnumerable<CMS.Data.Entities.Product>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly San pham"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-box-seam"></i> QUAN LY SAN PHAM</h4>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Them san pham moi
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:60px">ID</th>
+                    <th style="width:70px">Anh</th>
+                    <th>Ten san pham</th>
+                    <th style="width:160px">Danh muc</th>
+                    <th style="width:110px" class="text-end">Gia (VND)</th>
+                    <th style="width:90px" class="text-center">Ton kho</th>
+                    <th style="width:160px" class="text-center">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@item.Id</td>
+                        <td>
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/no-image.svg" : item.ImageUrl)"
+                                 style="width:50px;height:50px;object-fit:cover;border-radius:4px"
+                                 onerror="this.src='/images/no-image.svg'" />
+                        </td>
+                        <td class="fw-bold">@item.Name</td>
+                        <td>
+                            <span class="badge bg-secondary">@item.CategoryProduct?.Name</span>
+                        </td>
+                        <td class="text-end text-success fw-bold">
+                            @item.Price.ToString("N0")
+                        </td>
+                        <td class="text-center">
+                            @if (item.StockQuantity == 0)
+                            {
+                                <span class="badge bg-danger">Het hang</span>
+                            }
+                            else if (item.StockQuantity < 10)
+                            {
+                                <span class="badge bg-warning text-dark">@item.StockQuantity</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">@item.StockQuantity</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-warning me-1">
+                                <i class="bi bi-pencil"></i> Sua
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Xoa san pham [@item.Name]?')">
+                                <i class="bi bi-trash"></i> Xoa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">
+        Tong cong: @Model.Count() san pham
+    </div>
+</div>

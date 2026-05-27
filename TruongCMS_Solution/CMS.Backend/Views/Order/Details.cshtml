@@ -1,0 +1,129 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
+*@
+@model CMS.Data.Entities.Order
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Chi tiet Don hang"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">
+        <i class="bi bi-receipt"></i> DON HANG #@Model.Id
+        @switch (Model.Status)
+        {
+            case 0: <span class="badge bg-warning text-dark ms-2">Cho duyet</span> break;
+            case 1: <span class="badge bg-info text-dark ms-2">Dang giao</span> break;
+            case 2: <span class="badge bg-success ms-2">Hoan thanh</span> break;
+        }
+    </h4>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Quay lai
+    </a>
+</div>
+
+<div class="row g-4">
+
+    @* Thong tin don hang + cap nhat trang thai *@
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-info-circle"></i> Thong tin don hang
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5 text-muted">Khach hang:</dt>
+                    <dd class="col-7 fw-bold">@Model.Customer?.FullName</dd>
+
+                    <dt class="col-5 text-muted">Dien thoai:</dt>
+                    <dd class="col-7">@Model.Customer?.Phone</dd>
+
+                    <dt class="col-5 text-muted">Ngay dat:</dt>
+                    <dd class="col-7">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-5 text-muted">Ghi chu:</dt>
+                    <dd class="col-7 small">@(Model.Notes ?? "Khong co")</dd>
+                </dl>
+            </div>
+        </div>
+
+        @* Form cap nhat trang thai *@
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <i class="bi bi-arrow-repeat"></i> Cap nhat trang thai
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <select name="status" class="form-select">
+                            <option value="0" selected="@(Model.Status == 0 ? "selected" : null)">Cho duyet</option>
+                            <option value="1" selected="@(Model.Status == 1 ? "selected" : null)">Dang giao</option>
+                            <option value="2" selected="@(Model.Status == 2 ? "selected" : null)">Hoan thanh</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-save"></i> Luu trang thai
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* Chi tiet san pham trong don hang *@
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-list-ul"></i> Chi tiet san pham trong don (@Model.OrderDetails.Count san pham)
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.OrderDetails.Any())
+                {
+                    <p class="text-muted p-3 mb-0">Don hang chua co san pham nao.</p>
+                }
+                else
+                {
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:60px">Anh</th>
+                                <th>San pham</th>
+                                <th style="width:80px" class="text-center">SL</th>
+                                <th style="width:120px" class="text-end">Don gia</th>
+                                <th style="width:130px" class="text-end">Thanh tien</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var od in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@(string.IsNullOrEmpty(od.Product?.ImageUrl) ? "/images/no-image.svg" : od.Product!.ImageUrl)"
+                                             style="width:45px;height:45px;object-fit:cover;border-radius:4px"
+                                             onerror="this.src='/images/no-image.svg'" />
+                                    </td>
+                                    <td class="fw-bold">@od.Product?.Name</td>
+                                    <td class="text-center">@od.Quantity</td>
+                                    <td class="text-end">@od.UnitPrice.ToString("N0") đ</td>
+                                    <td class="text-end text-success fw-bold">
+                                        @((od.UnitPrice * od.Quantity).ToString("N0")) đ
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Tong cong:</td>
+                                <td class="text-end text-danger fw-bold fs-6">
+                                    @Model.OrderDetails.Sum(od => od.UnitPrice * od.Quantity).ToString("N0") đ
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
+*@
+@model IEnumerable<CMS.Data.Entities.Customer>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Khach hang"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-person-lines-fill"></i> QUAN LY KHACH HANG</h4>
+    <span class="badge bg-primary fs-6">@Model.Count() khach hang</span>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:60px">ID</th>
+                    <th>Ho va ten</th>
+                    <th>Email</th>
+                    <th>So dien thoai</th>
+                    <th>Dia chi</th>
+                    <th style="width:90px" class="text-center">Don hang</th>
+                    <th style="width:140px" class="text-center">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@item.Id</td>
+                        <td class="fw-bold">@item.FullName</td>
+                        <td>@item.Email</td>
+                        <td>@item.Phone</td>
+                        <td class="text-muted small">@item.Address</td>
+                        <td class="text-center">
+                            <span class="badge bg-primary">@item.Orders.Count</span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-info me-1">
+                                <i class="bi bi-eye"></i> Xem
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Xoa khach hang @item.FullName va tat ca don hang?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

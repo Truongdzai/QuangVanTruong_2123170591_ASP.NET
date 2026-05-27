@@ -1,9 +1,9 @@
 @*
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
-    Bai thuc hanh: 5
-    Ngay thuc hien: 26/05/2026
-    Version: 1.5
+    Bai thuc hanh: 6
+    Ngay thuc hien: 27/05/2026
+    Version: 1.6
 *@
 
 <!DOCTYPE html>
@@ -19,22 +19,39 @@
     <style>
         .sidebar {
             min-height: 100vh;
-            background-color: #212529;
+            background-color: #1a1d23;
             color: white;
         }
-        .sidebar a {
+        .sidebar .nav-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            padding: 12px 20px 4px;
+        }
+        .sidebar a.nav-link {
             color: #adb5bd;
             text-decoration: none;
-            display: block;
-            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
         }
-        .sidebar a:hover {
-            background-color: #343a40;
-            color: white;
+        .sidebar a.nav-link:hover {
+            background-color: #2c3036;
+            color: #fff;
+            border-left-color: #0d6efd;
         }
-        .sidebar .active {
-            background-color: #0d6efd;
-            color: white;
+        .sidebar a.nav-link.active {
+            background-color: #0d6efd22;
+            color: #4d9fff;
+            border-left-color: #0d6efd;
+        }
+        .sidebar .divider {
+            border-color: #2c3036;
+            margin: 6px 0;
         }
     </style>
 </head>
@@ -42,52 +59,81 @@
     <div class="container-fluid">
         <div class="row">
 
-            @*  SIDEBAR TRAI *@
+            @* ===== SIDEBAR ===== *@
             <nav class="col-md-3 col-lg-2 sidebar p-0">
 
-                @* Tieu de khu quan tri *@
-                <div class="p-3 text-center border-bottom border-secondary">
-                    <h5 class="text-white mb-0">
-                        <i class="bi bi-shield-lock"></i> TruongCMS Admin
+                @* Logo khu quan tri *@
+                <div class="p-3 text-center border-bottom" style="border-color:#2c3036!important">
+                    <h5 class="text-white mb-1">
+                        <i class="bi bi-shield-lock-fill text-primary"></i> TruongCMS
                     </h5>
+                    <small class="text-muted">He thong quan tri</small>
                 </div>
 
-                @* Menu dieu huong - asp-controller/asp-action tu sinh URL chinh xac *@
-                <div class="mt-2">
-                    <a asp-controller="Admin" asp-action="Index">
+                <div class="mt-1 pb-3">
+
+                    @* ---- Tong quan ---- *@
+                    <div class="nav-label">Tong quan</div>
+                    <a class="nav-link" asp-controller="Admin" asp-action="Index">
                         <i class="bi bi-speedometer2"></i> Bang dieu khien
                     </a>
-                    <a asp-controller="Category" asp-action="Index">
-                        <i class="bi bi-grid"></i> Quan ly Danh muc
+
+                    <hr class="divider mx-3" />
+
+                    @* ---- Tin tuc / CMS ---- *@
+                    <div class="nav-label">Tin tuc &amp; Noi dung</div>
+                    <a class="nav-link" asp-controller="Category" asp-action="Index">
+                        <i class="bi bi-grid-3x3-gap"></i> Danh muc tin
                     </a>
-                    <a asp-controller="Post" asp-action="Index">
-                        <i class="bi bi-file-earmark-post"></i> Quan ly Bai viet
+                    <a class="nav-link" asp-controller="Post" asp-action="Index">
+                        <i class="bi bi-file-earmark-post"></i> Bai viet
                     </a>
-                    <a asp-controller="User" asp-action="Index">
-                        <i class="bi bi-people"></i> Quan ly Thanh vien
+
+                    <hr class="divider mx-3" />
+
+                    @* ---- E-Commerce ---- *@
+                    <div class="nav-label">Thuong mai dien tu</div>
+                    <a class="nav-link" asp-controller="CategoryProduct" asp-action="Index">
+                        <i class="bi bi-tags"></i> Danh muc san pham
                     </a>
+                    <a class="nav-link" asp-controller="Product" asp-action="Index">
+                        <i class="bi bi-box-seam"></i> San pham
+                    </a>
+                    <a class="nav-link" asp-controller="Order" asp-action="Index">
+                        <i class="bi bi-bag-check"></i> Don hang
+                    </a>
+                    <a class="nav-link" asp-controller="Customer" asp-action="Index">
+                        <i class="bi bi-person-lines-fill"></i> Khach hang
+                    </a>
+
+                    <hr class="divider mx-3" />
+
+                    @* ---- He thong ---- *@
+                    <div class="nav-label">He thong</div>
+                    <a class="nav-link" asp-controller="User" asp-action="Index">
+                        <i class="bi bi-people"></i> Thanh vien quan tri
+                    </a>
+
                 </div>
             </nav>
 
-            @*  VUNG NOI DUNG CHINH (phai)
-               @RenderBody(): noi dung cua tung View se duoc "do" vao day
-               LUU Y: chi goi @RenderBody() DUNG MOT LAN, khong de trong comment HTML *@
+            @* ===== VUNG NOI DUNG CHINH ===== *@
             <main class="col-md-9 col-lg-10 ms-sm-auto p-0">
 
-                @* Buoi 5: Thanh tieu de hien thi nguoi dang dang nhap + nut dang xuat *@
+                @* Thanh tieu de: ten nguoi dung + nut dang xuat *@
                 @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     <div class="d-flex justify-content-between align-items-center px-4 py-2 bg-white border-bottom shadow-sm">
                         <span class="text-muted small">
                             <i class="bi bi-person-circle me-1"></i>
-                            Xin chào, <strong>@User.FindFirst("FullName")?.Value</strong>
+                            Xin chao, <strong>@User.FindFirst("FullName")?.Value</strong>
                             <span class="badge bg-secondary ms-1">
                                 @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value
                             </span>
                         </span>
                         <a class="btn btn-outline-danger btn-sm"
                            asp-controller="Account" asp-action="Logout">
-                            <i class="bi bi-box-arrow-right me-1"></i>Đăng xuất
+                            <i class="bi bi-box-arrow-right me-1"></i>Dang xuat
                         </a>
                     </div>
                 }
