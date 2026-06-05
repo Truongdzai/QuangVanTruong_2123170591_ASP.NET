@@ -1,0 +1,253 @@
+/* ── Announcement bar ────────────────────────────────────────────────────── */
+.annBar {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 11px 16px;
+  font-size: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.annBar a {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+.annClose {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+/* ── Navbar ──────────────────────────────────────────────────────────────── */
+.navRoot {
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, .08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.navLogo {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 26px;
+  color: #000;
+  text-decoration: none;
+  letter-spacing: .5px;
+  flex-shrink: 0;
+}
+.navLinks {
+  display: flex;
+  list-style: none;
+  gap: 24px;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+}
+.navLinks a {
+  color: #000;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 400;
+  transition: opacity .2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.navLinks a:hover {
+  opacity: .6;
+}
+.navSearch {
+  flex: 1;
+  background: #f0f0f0;
+  border-radius: 62px;
+  padding: 10px 16px 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.navSearch input {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  color: #333;
+}
+.navSearch input::placeholder {
+  color: rgba(0, 0, 0, .4);
+}
+.navIcons {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.navIconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: opacity .2s;
+  position: relative;
+  color: #000;
+}
+.navIconBtn:hover {
+  opacity: .6;
+}
+.navSearchMobile {
+  display: none;
+}
+.cartBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #000;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px;
+}
+
+/* ── Hamburger ───────────────────────────────────────────────────────────── */
+.navHamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.navHamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #000;
+  border-radius: 2px;
+  transition: transform .2s, opacity .2s;
+}
+
+/* ── Mobile dropdown menu ────────────────────────────────────────────────── */
+.navMobileMenu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 200;
+  flex-direction: column;
+  padding: 24px;
+}
+.navMobileMenu.open {
+  display: flex;
+}
+.navMobileTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.navMobileClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 24px;
+  line-height: 1;
+}
+.navMobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.navMobileLinks a {
+  color: #000;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navMobileSearch {
+  margin-top: 24px;
+  background: #f0f0f0;
+  border-radius: 62px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navMobileSearch input {
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-family: inherit;
+  width: 100%;
+  color: #333;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .navLinks,
+  .navSearch {
+    display: none;
+  }
+  .navSearchMobile {
+    display: flex;
+  }
+  .navHamburger {
+    display: flex;
+  }
+  .navInner {
+    padding: 16px 20px;
+    gap: 16px;
+  }
+  .navLogo {
+    flex: 1;
+    text-align: center;
+  }
+}
