@@ -1,13 +1,48 @@
+/* Ho ten: Quang Văn Trường || MSV: 2123170591 */
+/* Môn: ASP.NET Core || Giảng viên: Nguyễn Cao Thái */
+/* ============================================================= */
+/* BUỔI 8 – GỌI API TỪ REACTJS & HOOK USEEFFECT */
+/* ============================================================= */
+
 .blog-page { padding-top: 32px; }
 .blog-breadcrumb { margin-bottom: 32px; }
 
 .blog-loading { text-align: center; padding: 4rem 0; color: rgba(0,0,0,.5); }
 
+/* Buổi 8 – bố cục 2 cột: sidebar chuyên mục (trái) + danh sách bài viết (phải) */
+.blog-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  align-items: start;
+  padding-bottom: 60px;
+}
+
+.blog-filter-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: .9rem;
+  color: rgba(0,0,0,.6);
+  margin-bottom: 20px;
+}
+
+.blog-filter-clear {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 62px;
+  padding: 4px 14px;
+  font-size: .8rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+
+.blog-filter-clear:hover { background: #000; color: #fff; border-color: #000; }
+
 .blog-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 32px;
-  padding-bottom: 60px;
 }
 
 .blog-card {
@@ -73,5 +108,7 @@
 .blog-card-read { font-size: .85rem; font-weight: 700; color: #000; text-decoration: none; }
 .blog-card-read:hover { text-decoration: underline; }
 
-@media (max-width: 900px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 1000px) {
+  .blog-layout { grid-template-columns: 1fr; }
+}
 @media (max-width: 600px) { .blog-grid { grid-template-columns: 1fr; } }

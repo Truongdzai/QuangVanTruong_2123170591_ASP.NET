@@ -1,10 +1,16 @@
+//Ho ten: Quang Văn Trường || MSV: 2123170591
+//Môn: ASP.NET Core || Giảng viên: Nguyễn Cao Thái
 // =============================================================
+// BUỔI 8 – GỌI API TỪ REACTJS & HOOK USEEFFECT
+// =============================================================
+// Buổi 8 bổ sung mockBlogCategories (mock cho /api/categories)
+//
 // Dữ liệu mẫu (mock) — SHOP.CO Thời trang
 // Dùng để xem trước giao diện khi chưa bật backend (VITE_USE_MOCK=true).
 // Khi backend ASP.NET sẵn sàng, đặt VITE_USE_MOCK=false trong .env.
 // =============================================================
 
-import type { Category, Product, Post } from '../../types';
+import type { Category, Product, Post, BlogCategory } from '../../types';
 
 export const mockCategories: Category[] = [
   { id: 1, name: 'Thường ngày', slug: 'thuong-ngay', description: 'Trang phục thường ngày thoải mái', icon: 'shirt' },
@@ -228,6 +234,17 @@ export const mockPosts: Post[] = [
     categoryId: 3,
     category: { id: 3, name: 'Bền vững' },
   },
+];
+
+// Buổi 8 – Chuyên mục tin tức (mock cho /api/categories khi VITE_USE_MOCK=true).
+// Tên chủ đề khớp với category của mockPosts ở trên để thanh lọc hoạt động ngay
+// khi xem offline. Khi VITE_USE_MOCK=false, dữ liệu thật lấy từ bảng Categories
+// (seed trong CMS.Data/DbInitializer.cs: Tin tức Công nghệ, Đời sống du lịch…).
+export const mockBlogCategories: BlogCategory[] = [
+  { id: 1, name: 'Xu hướng',          description: 'Xu hướng thời trang mới nhất theo mùa.' },
+  { id: 2, name: 'Cẩm nang phối đồ',  description: 'Mẹo phối đồ thanh lịch cho mọi dịp.' },
+  { id: 3, name: 'Bền vững',          description: 'Thời trang bền vững và tủ đồ tối giản.' },
+  { id: 4, name: 'Phụ kiện',          description: 'Giày dép, túi xách và phụ kiện đi kèm.' },
 ];
 
 export const mockGalleryImages: string[] = [

@@ -1,3 +1,10 @@
+//Ho ten: Quang Văn Trường || MSV: 2123170591
+//Môn: ASP.NET Core || Giảng viên: Nguyễn Cao Thái
+// =============================================================
+// BUỔI 8 – GỌI API TỪ REACTJS & HOOK USEEFFECT
+// =============================================================
+// Buổi 8 bổ sung type BlogCategory (chuyên mục bài viết - /api/categories)
+
 // Domain types
 
 export interface Category {
@@ -38,6 +45,17 @@ export interface Post {
   createdDate: string;
   categoryId: number;
   category: { id: number; name: string };
+}
+
+/**
+ * Buổi 8 – Chuyên mục tin tức (bảng `Categories` ở Backend, API `/api/categories`).
+ * Khác hẳn `Category` ở trên: `Category` dùng phân loại SẢN PHẨM bán hàng,
+ * còn `BlogCategory` dùng phân loại BÀI VIẾT/tin tức của blog.
+ */
+export interface BlogCategory {
+  id: number;
+  name: string;
+  description: string;
 }
 
 export interface TeamMember {

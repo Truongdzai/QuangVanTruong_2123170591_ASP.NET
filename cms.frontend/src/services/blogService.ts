@@ -1,13 +1,15 @@
 //Ho ten: Quang Văn Trường || MSV: 2123170591
 //Môn: ASP.NET Core || Giảng viên: Nguyễn Cao Thái
 // =============================================================
-// BUỔI 7 - SERVICE TIN TỨC / BLOG (Posts)
-// Route Backend: /api/posts , /api/posts/{id}
+// BUỔI 8 – GỌI API TỪ REACTJS & HOOK USEEFFECT
 // =============================================================
+// Service tin tức/blog (tạo ở Buổi 7, mở rộng ở Buổi 8):
+//  - getPosts / getPostById -> /api/posts , /api/posts/{id}
+//  - getBlogCategories      -> /api/categories (bài tập tự làm Buổi 8)
 
-import type { Post } from '../types';
+import type { Post, BlogCategory } from '../types';
 import { USE_MOCK, apiGet, delay, resolveImageUrl } from './http';
-import { mockPosts } from './mock';
+import { mockPosts, mockBlogCategories } from './mock';
 
 /** Khớp với projection GET /api/posts (danh sach, khong co content) */
 interface BackendPostList {
@@ -82,10 +84,40 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   return getPostById(id);
 }
 
+// =============================================================
+// BUỔI 8 – BÀI TẬP MỞ RỘNG: SERVICE CHUYÊN MỤC TIN TỨC (Categories)
+// Route Backend: GET /api/categories  (CategoriesController – trả JSON)
+// Lưu ý: KHÁC hẳn danh mục sản phẩm (categoryService -> /categoriesproducts).
+//        Bảng Categories phân loại BÀI VIẾT, không phải SẢN PHẨM bán hàng.
+// =============================================================
+
+/** Khớp projection GET /api/categories (Id, Name, Description) */
+interface BackendBlogCategory {
+  id: number;
+  name: string;
+  description?: string | null;
+}
+
+function mapBlogCategory(bc: BackendBlogCategory): BlogCategory {
+  return {
+    id:          bc.id,
+    name:        bc.name,
+    description: bc.description ?? '',
+  };
+}
+
+/** Lấy danh sách chuyên mục tin tức để dựng thanh lọc bài viết (List Group) */
+export async function getBlogCategories(): Promise<BlogCategory[]> {
+  if (USE_MOCK) { await delay(); return mockBlogCategories; }
+  const raw = await apiGet<BackendBlogCategory[]>('/categories');
+  return raw.map(mapBlogCategory);
+}
+
 const blogService = {
   getPosts,
   getPostById,
   getPostBySlug,
+  getBlogCategories,
 };
 
 export default blogService;
