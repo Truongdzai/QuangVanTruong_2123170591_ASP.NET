@@ -24,6 +24,12 @@
                 <label class="form-label fw-bold">Mo ta:</label>
                 <textarea asp-for="Description" class="form-control" rows="3"></textarea>
             </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Anh dai dien nganh hang (URL):</label>
+                <input asp-for="ImageUrl" class="form-control"
+                       placeholder="https://... (hien thi o khoi CategoryMenu trang chu ReactJS)" />
+                <div class="form-text">Tieu chi 38: anh hien o khoi danh muc tren trang chu FrontEnd.</div>
+            </div>
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-warning">
                     <i class="bi bi-save"></i> Luu thay doi

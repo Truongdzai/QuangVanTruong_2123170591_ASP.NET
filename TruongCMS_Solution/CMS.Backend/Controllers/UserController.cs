@@ -30,16 +30,33 @@ public class UserController : Controller
         ViewBag.RoleList = new SelectList(roles, selected);
     }
 
-    // INDEX - danh sach thanh vien, sap xep theo Role -> FullName
+    // INDEX - danh sach thanh vien + TIM KIEM (ten DN/ho ten/quyen) + PHAN TRANG
     // GET /User
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int page = 1, string? search = null)
     {
+        const int pageSize = 10;
+        var query = _context.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            string kw = search.Trim();
+            query = query.Where(u => u.Username.Contains(kw) ||
+                                     u.FullName.Contains(kw) ||
+                                     u.Role.Contains(kw));
+        }
+
+        int total = await query.CountAsync();
+        int totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)pageSize));
+        page = Math.Clamp(page, 1, totalPages);
+
         // OrderBy Role truoc de nhom theo quyen han, sau do theo ten
-        var users = await _context.Users
-            .OrderBy(u => u.Role)
-            .ThenBy(u => u.FullName)
+        var users = await query
+            .OrderBy(u => u.Role).ThenBy(u => u.FullName)
+            .Skip((page - 1) * pageSize).Take(pageSize)
             .ToListAsync();
 
+        ViewBag.Page = page; ViewBag.TotalPages = totalPages;
+        ViewBag.Search = search; ViewBag.TotalItems = total;
         return View(users);
     }
 
@@ -68,6 +85,9 @@ public class UserController : Controller
             LoadRoleList(model.Role);
             return View(model);
         }
+
+        // Tieu chi 33: bam mat khau SHA256+Salt truoc khi luu, khong giu mat khau tho
+        model.PasswordHash = PasswordHasher.Hash(model.PasswordHash);
 
         _context.Users.Add(model);
         await _context.SaveChangesAsync();
@@ -101,6 +121,13 @@ public class UserController : Controller
             ModelState.AddModelError("Username", "Ten dang nhap nay da ton tai, vui long chon ten khac.");
             LoadRoleList(model.Role);
             return View(model);
+        }
+
+        // Tieu chi 33: neu admin nhap mat khau MOI (chuoi tho) thi bam lai truoc khi luu.
+        // Neu giu nguyen chuoi hash cu (form hien san) thi khong bam lan 2.
+        if (!PasswordHasher.IsHashed(model.PasswordHash))
+        {
+            model.PasswordHash = PasswordHasher.Hash(model.PasswordHash);
         }
 
         _context.Users.Update(model);

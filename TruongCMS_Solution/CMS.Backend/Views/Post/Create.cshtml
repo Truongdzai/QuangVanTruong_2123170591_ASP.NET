@@ -2,7 +2,7 @@
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
     Bai thuc hanh: 4
-    Ngay thuc hien: 23/03/2026
+    Ngay thuc hien: 23/05/2026
     Version: 1.4
 *@
 @model CMS.Data.Entities.Post
@@ -16,6 +16,8 @@
     <div class="card-body">
         @* enctype multipart: bat buoc khi form co upload file anh *@
         <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @* Tom tat loi server tra ve (vd thieu tieu de/noi dung) — tranh trang 500 *@
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
             <div class="row">
 
                 @* Cot trai: tieu de + noi dung *@
@@ -23,11 +25,16 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tieu de bai viet:</label>
                         <input asp-for="Title" class="form-control" placeholder="Nhap tieu de..." />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Noi dung chi tiet:</label>
-                        <textarea asp-for="Content" class="form-control" rows="10"
+                        @* Tieu chi 15 + 35: o nhap lieu nay duoc CKEditor 5 thay the
+                           thanh trinh soan thao giau tinh nang (chu dam, nghieng, can le,
+                           chen anh truc tiep vao giua bai). Content luu duoi dang ma HTML. *@
+                        <textarea asp-for="Content" id="editorContent" class="form-control" rows="10"
                                   placeholder="Viet noi dung tai day..."></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -39,6 +46,7 @@
                         <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
                             <option value="">-- Chon danh muc --</option>
                         </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
@@ -76,6 +84,11 @@
 </div>
 
 @section Scripts {
+@* Kiem tra hop le phia client (jQuery unobtrusive) cho Title/Chuyen muc *@
+<partial name="_ValidationScriptsPartial" />
+@* Tieu chi 15: nap CKEditor 5 (ban classic) tu CDN *@
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/translations/vi.js"></script>
 <script>
     // Xem truoc anh ngay khi nguoi dung chon file, khong can upload len server truoc
     function xemTruocAnh(input) {
@@ -87,5 +100,23 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Tieu chi 15 + 35: bien textarea Content thanh trinh soan thao CKEditor.
+    // ckfinder.uploadUrl: anh keo-tha/chon trong editor se POST len /Post/UploadImage,
+    // server tra ve { uploaded, url } -> CKEditor tu chen <img src="url"> vao giua bai viet.
+    ClassicEditor
+        .create(document.querySelector('#editorContent'), {
+            language: 'vi',
+            ckfinder: { uploadUrl: '/Post/UploadImage' },
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'link', '|',
+                'bulletedList', 'numberedList', 'blockQuote', '|',
+                'imageUpload', 'insertTable', 'mediaEmbed', '|',
+                'undo', 'redo'
+            ]
+        })
+        .then(editor => { window._editor = editor; })
+        .catch(err => console.error('Loi khoi tao CKEditor:', err));
 </script>
 }

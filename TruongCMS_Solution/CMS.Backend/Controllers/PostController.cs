@@ -1,8 +1,8 @@
 // Ho ten: Quang Van Truong || MSV: 2123170591
 // Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
-// Bai thuc hanh: 4
-// Ngay thuc hien: 23/03/2026
-// Version: 1.4
+// Bai thuc hanh: 9 (CKEditor + upload anh vao noi dung + phan trang admin)
+// Ngay thuc hien: 11/06/2026
+// Version: 1.9
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -55,29 +55,49 @@ public class PostController : Controller
             "Id", "Name", selectedId);
     }
 
-    // INDEX - danh sach bai viet, co loc theo danh muc
-    // GET /Post          -> lay tat ca
-    // GET /Post/Index/5  -> loc bai thuoc CategoryId = 5
-    public async Task<IActionResult> Index(int? id)
+    // INDEX - danh sach bai viet, co loc theo danh muc + PHAN TRANG (Tieu chi 14)
+    // GET /Post                 -> trang 1
+    // GET /Post?page=2          -> trang 2
+    // GET /Post/Index/5?page=1  -> loc bai thuoc CategoryId = 5, trang 1
+    public async Task<IActionResult> Index(int? id, int page = 1, string? search = null)
     {
+        const int pageSize = 5; // 5 bai moi trang de bang gon gang
+
         // .Include(p -> p.Category): lay kem ten danh muc, tranh null khi hien len view
-        var query = _context.Posts.Include(p => p.Category);
+        var query = _context.Posts.Include(p => p.Category).AsQueryable();
 
         if (id != null)
         {
             // .Where: chi lay bai co CategoryId bang voi id truyen vao URL
-            var filtered = await query
-                .Where(p => p.CategoryId == id)
-                .OrderByDescending(p => p.CreatedDate)
-                .ToListAsync();
-            return View(filtered);
+            query = query.Where(p => p.CategoryId == id);
         }
 
-        // Khong co id -> lay het, moi nhat len dau
-        var all = await query
+        // TIM KIEM theo tieu de / noi dung
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            string kw = search.Trim();
+            query = query.Where(p => p.Title.Contains(kw) ||
+                                     (p.Content != null && p.Content.Contains(kw)));
+        }
+
+        int tongBai = await query.CountAsync();
+        int tongTrang = Math.Max(1, (int)Math.Ceiling(tongBai / (double)pageSize));
+        page = Math.Clamp(page, 1, tongTrang);
+
+        var posts = await query
             .OrderByDescending(p => p.CreatedDate)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
-        return View(all);
+
+        // Du lieu phan trang cho View ve thanh chuyen trang
+        ViewBag.Page = page;
+        ViewBag.TotalPages = tongTrang;
+        ViewBag.CategoryId = id;
+        ViewBag.Search = search;
+        ViewBag.TotalItems = tongBai;
+
+        return View(posts);
     }
 
     // DETAILS - xem chi tiet 1 bai viet
@@ -108,6 +128,19 @@ public class PostController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(Post model, IFormFile? uploadImage)
     {
+        // ImageUrl do Controller tu gan sau khi upload, Category do EF nap -> bo khoi kiem tra
+        ModelState.Remove(nameof(Post.ImageUrl));
+        ModelState.Remove(nameof(Post.Category));
+
+        // BAT LOI DU LIEU THIEU: Title/Content rong se bi binder doi thanh NULL.
+        // Khong chan o day -> NULL vao cot NOT NULL -> SaveChanges nem DbUpdateException (loi 500).
+        // Tra ve form kem thong bao loi de nguoi dung sua, thay vi de trang crash.
+        if (!ModelState.IsValid)
+        {
+            LoadCategoryList(model.CategoryId);
+            return View(model);
+        }
+
         // Neu co chon file anh thi upload, nguoc lai giu null -> hien anh mac dinh
         model.ImageUrl = await UploadImageAsync(uploadImage);
         model.CreatedDate = DateTime.Now;
@@ -138,6 +171,17 @@ public class PostController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(Post model, IFormFile? uploadImage)
     {
+        // ImageUrl xu ly rieng ben duoi, Category do EF nap -> bo khoi kiem tra hop le
+        ModelState.Remove(nameof(Post.ImageUrl));
+        ModelState.Remove(nameof(Post.Category));
+
+        // Chan Title/Content/CategoryId thieu -> tra ve form bao loi (khong de NULL crash SQL)
+        if (!ModelState.IsValid)
+        {
+            LoadCategoryList(model.CategoryId);
+            return View(model);
+        }
+
         if (uploadImage != null && uploadImage.Length > 0)
         {
             // Co file anh moi -> upload len server, cap nhat ImageUrl
@@ -159,6 +203,37 @@ public class PostController : Controller
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index");
+    }
+
+    // TIEU CHI 35 - UPLOAD ANH TU CKEDITOR
+    // CKEditor 5 (CKFinder adapter) POST file vao day voi field name = "upload".
+    // Tra ve JSON { uploaded, url } de CKEditor tu chen the <img> vao giua noi dung.
+    // POST /Post/UploadImage
+    [HttpPost]
+    [IgnoreAntiforgeryToken] // CKEditor goi AJAX truc tiep, khong co token cua form Razor
+    public async Task<IActionResult> UploadImage(IFormFile upload)
+    {
+        if (upload == null || upload.Length == 0)
+        {
+            return Json(new { uploaded = 0, error = new { message = "Chưa chọn file ảnh." } });
+        }
+
+        // Chi nhan dung dinh dang anh, chan file la (exe, script...)
+        var choPhep = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg" };
+        string duoiFile = Path.GetExtension(upload.FileName).ToLowerInvariant();
+        if (!choPhep.Contains(duoiFile))
+        {
+            return Json(new { uploaded = 0, error = new { message = "Chỉ chấp nhận file ảnh (jpg, png, gif, webp, svg)." } });
+        }
+
+        string? url = await UploadImageAsync(upload);
+
+        return Json(new
+        {
+            uploaded = 1,
+            fileName = Path.GetFileName(url ?? ""),
+            url
+        });
     }
 
     // DELETE - xoa bai viet

@@ -38,6 +38,25 @@
                             <input asp-for="StockQuantity" type="number" min="0" class="form-control" />
                         </div>
                     </div>
+                    @* Bo chon mau (swatch) + chon size (chip) — DONG BO voi trang Them moi *@
+                    <partial name="_ColorSizePicker" view-data='new ViewDataDictionary(ViewData) { ["CurrentColors"] = Model.Colors, ["CurrentSizes"] = Model.Sizes }' />
+                    @if (!string.IsNullOrEmpty(Model.GalleryUrls))
+                    {
+                        <div class="mb-3 border rounded p-3 bg-light">
+                            <label class="form-label fw-bold"><i class="bi bi-images"></i> Bo suu tap hien tai:</label>
+                            <div class="d-flex gap-2 flex-wrap mb-2">
+                                @foreach (var anh in Model.GalleryUrls.Split('\n'))
+                                {
+                                    <img src="@anh.Trim()" style="width:70px;height:70px;object-fit:cover;border-radius:6px"
+                                         onerror="this.src='/images/no-image.svg'" />
+                                }
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" name="clearGallery" value="true" class="form-check-input" id="clearGallery" />
+                                <label class="form-check-label" for="clearGallery">Xoa het anh cu trong bo suu tap</label>
+                            </div>
+                        </div>
+                    }
                 </div>
 
                 <div class="col-md-4">
@@ -55,10 +74,17 @@
                              class="rounded border mb-2"
                              style="height:150px;object-fit:cover;width:100%"
                              onerror="this.src='/images/no-image.svg'" />
-                        <label class="form-label">Thay anh moi <span class="text-muted">(bo trong = giu cu)</span>:</label>
-                        <input type="file" name="uploadImage" id="uploadImage"
-                               class="form-control" accept="image/*"
+                        <label class="form-label">Cach 1 — UPLOAD file <span class="text-muted">(bo trong = giu cu)</span>:</label>
+                        <input type="file" name="uploadImages" id="uploadImages"
+                               class="form-control" accept="image/*" multiple
                                onchange="xemTruocAnh(this)" />
+                        <div class="form-text">
+                            Anh dau tien thay anh dai dien, cac anh sau NOI THEM vao bo suu tap.
+                        </div>
+                        <div id="anhThumbs" class="d-flex gap-2 flex-wrap mt-2"></div>
+                        <label class="form-label fw-bold mt-3">Cach 2 — DAN URL anh (moi dong 1 link):</label>
+                        <textarea name="imageUrlsText" class="form-control" rows="2"
+                                  placeholder="https://.../anh.jpg"></textarea>
                     </div>
                     <hr />
                     <div class="d-grid gap-2">
@@ -77,14 +103,26 @@
 
 @section Scripts {
 <script>
+    // Xem truoc: anh DAU TIEN thay anh dai dien hien tai,
+    // cac anh con lai hien thumbnail nho (se noi them vao bo suu tap)
     function xemTruocAnh(input) {
-        if (input.files && input.files[0]) {
+        var anhTo = document.getElementById('anhXemTruoc');
+        var khungNho = document.getElementById('anhThumbs');
+        khungNho.innerHTML = '';
+
+        if (!input.files || input.files.length === 0) return;
+
+        Array.from(input.files).forEach(function (file, i) {
             var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('anhXemTruoc').src = e.target.result;
+            reader.onload = function (e) {
+                if (i === 0) { anhTo.src = e.target.result; return; }
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #dee2e6';
+                khungNho.appendChild(img);
             };
-            reader.readAsDataURL(input.files[0]);
-        }
+            reader.readAsDataURL(file);
+        });
     }
 </script>
 }

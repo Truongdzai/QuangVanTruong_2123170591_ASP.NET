@@ -24,22 +24,57 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        // GET api/posts - Lay toan bo bai viet (got tia chi lay truong can thiet)
+        // GET api/posts - Lay bai viet (got tia chi lay truong can thiet)
+        // Buoi 9 (Tieu chi 14): ho tro ?page=&pageSize=&categoryId= de phan trang PostGrid.
+        // Khong truyen page -> tra ve mang JSON thuan nhu cu (tuong thich nguoc).
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int? page,
+            [FromQuery] int pageSize = 6,
+            [FromQuery] int? categoryId = null)
         {
-            var posts = await _context.Posts
+            var query = _context.Posts.AsQueryable();
+
+            if (categoryId.HasValue && categoryId > 0)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            var projected = query
                 .OrderByDescending(p => p.Id)
                 .Select(p => new {
                     p.Id,
                     p.Title,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
                     CategoryName = p.Category != null ? p.Category.Name : ""
-                })
+                });
+
+            if (!page.HasValue)
+            {
+                return Ok(await projected.ToListAsync());
+            }
+
+            // Phan trang Skip/Take duoi SQL Server
+            int coTrang = Math.Clamp(pageSize, 1, 50);
+            int tongBai = await projected.CountAsync();
+            int tongTrangBai = (int)Math.Ceiling(tongBai / (double)coTrang);
+
+            // Keo so trang ve khoang hop le (page qua lon -> tra trang cuoi)
+            int trang = Math.Clamp(Math.Max(1, page.Value), 1, Math.Max(1, tongTrangBai));
+
+            var items = await projected
+                .Skip((trang - 1) * coTrang)
+                .Take(coTrang)
                 .ToListAsync();
 
-            return Ok(posts);
+            return Ok(new
+            {
+                items,
+                totalItems = tongBai,
+                page = trang,
+                pageSize = coTrang,
+                totalPages = (int)Math.Ceiling(tongBai / (double)coTrang)
+            });
         }
 
         // GET api/posts/category/{categoryId} - Loc bai viet theo danh muc

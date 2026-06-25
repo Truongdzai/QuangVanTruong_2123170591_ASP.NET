@@ -1,0 +1,144 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Nang cap theo BAO CAO NGHIEN CUU: gan san pham + gia sale vao khung gio
+*@
+@model CMS.Data.Entities.FlashSale
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa Flash Sale";
+    var now = DateTime.Now;
+    bool dangChay = Model.IsActive && Model.StartTime <= now && Model.EndTime > now;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">
+        <i class="bi bi-lightning-charge-fill text-warning"></i> @Model.Name
+        @if (dangChay) { <span class="badge bg-success ms-2">ĐANG CHẠY</span> }
+    </h4>
+    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+</div>
+
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"]   != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white"><i class="bi bi-gear"></i> Thiết lập chương trình</div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên chương trình</label>
+                        <input name="name" value="@Model.Name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bắt đầu</label>
+                        <input name="startTime" type="datetime-local" class="form-control"
+                               value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kết thúc</label>
+                        <input name="endTime" type="datetime-local" class="form-control"
+                               value="@Model.EndTime.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input name="isActive" type="checkbox" value="true" class="form-check-input"
+                               checked="@(Model.IsActive ? "checked" : null)" />
+                        <label class="form-check-label">Kích hoạt</label>
+                        <input type="hidden" name="isActive" value="false" />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save"></i> Lưu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-warning"><i class="bi bi-plus-circle"></i> Thêm sản phẩm vào khung giờ sale</div>
+            <div class="card-body">
+                <form asp-action="AddItem" method="post" class="row g-2 align-items-end">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="flashSaleId" value="@Model.Id" />
+                    <div class="col-md-5">
+                        <label class="form-label small">Sản phẩm</label>
+                        <select name="productId" class="form-select" required>
+                            <option value="">-- Chọn sản phẩm --</option>
+                            @foreach (var sp in (IEnumerable<dynamic>)ViewBag.SanPhamChuaCo)
+                            {
+                                <option value="@sp.Id">@sp.Name (giá gốc @(((decimal)sp.Price).ToString("N0")))</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small">Giá sale (&lt; giá gốc)</label>
+                        <input name="salePrice" type="number" step="0.01" min="0" class="form-control" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">Giới hạn suất (0 = ∞)</label>
+                        <input name="quantityLimit" type="number" min="0" value="0" class="form-control" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-warning w-100"><i class="bi bi-plus-lg"></i> Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <i class="bi bi-list-ul"></i> Sản phẩm trong chương trình (@Model.Items.Count)
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.Items.Any())
+                {
+                    <p class="text-muted p-3 mb-0">Chưa có sản phẩm nào trong chương trình.</p>
+                }
+                else
+                {
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th class="text-end" style="width:110px">Giá gốc</th>
+                                <th class="text-end" style="width:110px">Giá sale</th>
+                                <th class="text-center" style="width:90px">Giảm</th>
+                                <th class="text-center" style="width:110px">Đã bán/Suất</th>
+                                <th class="text-center" style="width:70px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                decimal giaGoc = item.Product?.Price ?? 0;
+                                int phanTram = giaGoc > 0 ? (int)Math.Round((1 - item.SalePrice / giaGoc) * 100) : 0;
+                                <tr>
+                                    <td class="fw-bold">@item.Product?.Name</td>
+                                    <td class="text-end text-muted"><s>@giaGoc.ToString("N0")</s></td>
+                                    <td class="text-end text-danger fw-bold">@item.SalePrice.ToString("N0")</td>
+                                    <td class="text-center"><span class="badge bg-danger">-@phanTram%</span></td>
+                                    <td class="text-center small">
+                                        @item.SoldCount / @(item.QuantityLimit == 0 ? "∞" : item.QuantityLimit.ToString())
+                                    </td>
+                                    <td class="text-center">
+                                        <form asp-action="RemoveItem" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="itemId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Bỏ sản phẩm khỏi chương trình?')">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

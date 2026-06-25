@@ -17,6 +17,8 @@
     </a>
 </div>
 
+<partial name="_AdminSearch" view-data='new ViewDataDictionary(ViewData) { ["SearchPlaceholder"] = "Tìm theo tên / mô tả danh mục..." }' />
+
 <div class="card shadow-sm">
     <div class="card-body p-0">
         <table class="table table-hover table-bordered mb-0">
@@ -53,4 +55,7 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer text-muted small">Tong cong: @(ViewBag.TotalItems ?? Model.Count()) danh muc</div>
 </div>
+
+<partial name="_AdminPager" />

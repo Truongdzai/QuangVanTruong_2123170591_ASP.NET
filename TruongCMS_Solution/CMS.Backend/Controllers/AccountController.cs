@@ -36,12 +36,24 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string username, string password)
     {
-        // Buoc 1: Tim tai khoan trong bang Users
-        var user = _context.Users.FirstOrDefault(
-            u => u.Username == username && u.PasswordHash == password);
+        // Buoc 1: Tim tai khoan theo username, sau do doi chieu mat khau bang hash
+        // (Tieu chi 33: khong luu/so sanh mat khau tho — dung SHA256 + Salt)
+        var user = _context.Users.FirstOrDefault(u => u.Username == username);
+
+        if (user != null && !PasswordHasher.Verify(password ?? "", user.PasswordHash))
+        {
+            user = null; // Sai mat khau -> xu ly nhu khong tim thay tai khoan
+        }
 
         if (user != null)
         {
+            // Du lieu cu con luu mat khau tho -> nhan dip dang nhap thanh cong de nang cap hash
+            if (!PasswordHasher.IsHashed(user.PasswordHash))
+            {
+                user.PasswordHash = PasswordHasher.Hash(password!);
+                await _context.SaveChangesAsync();
+            }
+
             // Buoc 2: Thiet lap danh tinh (Claims) - giong nhu noi dung chung minh nhan dan
             var claims = new List<Claim>
             {

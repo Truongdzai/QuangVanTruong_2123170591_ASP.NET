@@ -1,0 +1,291 @@
+[1|Heading 3] PHẦN 1: NỀN TẢNG & CƠ SỞ DỮ LIỆU (CHƯƠNG 1 & 2)
+[2|Heading 4] Buổi 1: Tổng quan .NET Core & C# Nâng cao
+[7|Heading 4] Buổi 2: EF Core & Migration (Trọng tâm Chương 2)
+[12|Heading 4] Buổi 3: Truy vấn LINQ & Thao tác dữ liệu chuyên sâu
+[18|Heading 3] PHẦN 2: BACKEND API & ADMIN PANEL (CHƯƠNG 3 & 4)
+[19|Heading 4] Buổi 4: ASP.NET Core MVC cho trang Quản trị
+[24|Heading 4] Buổi 5: Validation & Identity (Bảo mật)
+[29|Heading 4] Buổi 6: WebAPI RESTful Service (Trọng tâm Chương 4)
+[35|Heading 3] PHẦN 3: FRONTEND REACTJS & KẾT NỐI (CHƯƠNG 4)
+[36|Heading 4] Buổi 7: Nhập môn ReactJS cho  .NET
+[41|Heading 4] Buổi 8: Gọi API từ ReactJS & useEffect
+[46|Heading 4] Buổi 9: Routing & Trang chi tiết bài viết
+[52|Heading 3] PHẦN 4: NÂNG CAO & HOÀN THIỆN ĐỒ ÁN
+[53|Heading 4] Buổi 10: gRPC Service & Kiểm tra tiến độ (Chương 2 nâng cao)
+[58|Heading 4] Buổi 11: Hoàn thiện Website thực tế & Debug
+[63|Heading 4] Buổi 12: Tổng kết & Báo cáo đồ án kết thúc môn
+[70|Heading 1] HƯỚNG DẪN CÀI ĐẶT MÔI TRƯỜNG LẬP TRÌNH ASP.NET CORE
+[73|Heading 2] 1. CÀI ĐẶT VISUAL STUDIO 2022 (CÔNG CỤ LẬP TRÌNH CHÍNH)
+[83|Heading 2] 2. CÀI ĐẶT SQL SERVER & SSMS (HỆ QUẢN TRỊ CƠ SỞ DỮ LIỆU)
+[85|Heading 3] A. SQL Server Express
+[88|Heading 3] B. SQL Server Management Studio (SSMS)
+[93|Heading 2] 3. CÀI ĐẶT .NET 6.0 HOẶC .NET 8.0 SDK
+[98|Heading 2] 4. CÁC TIỆN ÍCH HỖ TRỢ (NÊN CÓ)
+[104|Heading 2] 5. KIỂM TRA SAU CÀI ĐẶT (CHECKPOINT)
+[112|Heading 1] BUỔI 1: KHỞI TẠO CẤU TRÚC ĐỒ ÁN TỐT NGHIỆP CMS FULL-STACK
+[113|Heading 2] 🎯 Mục tiêu bài học
+[114|normal] Sau khi kết thúc buổi này, có thể:
+[120|Heading 2] 🏗 Bước 1: Tạo Thùng chứa dự án (Blank Solution)
+[126|Heading 2] 🛠 Bước 2: Tạo Project 1 - CMS.Data (Lớp Dữ liệu)
+[133|Heading 3] 2.1. Thực thể Danh mục (Category.cs)
+[146|Heading 3] 2.2. Thực thể Bài viết (Post.cs)
+[162|Heading 3] 2.3. Thực thể Người dùng (User.cs)
+[175|Heading 3] 2.4. Thực thể Danh mục sản phẩm (CategoryProduct.cs)
+[197|Heading 3] 2.5.Thực thể Sản phẩm (Product.cs)
+[230|Heading 3] 2.6.Thực thể Khách hàng (Customer.cs)
+[261|Heading 3] 2.7.Thực thể Đơn hàng (Order.cs)
+[288|Heading 3] 2.8.Thực thể Chi tiết đơn hàng  (OrderDetail.cs)
+[318|Heading 2] ⚙️ Bước 3: Tạo Project 2 - CMS.Backend (Lớp Xử lý API)
+[324|Heading 3] Kiểm chứng Project hoạt động chưa? Thiết lập dự án khởi động (Startup Project)
+[334|Heading 2] 🌐 Bước 4: Tạo Project 3 - CMS.Frontend (Lớp Giao diện)
+[351|Heading 3] Lựa chọn: "Update the target to .NET Framework 4.8 (Recommended)"
+[356|Heading 3] Cách chạy thử Project 3 sau khi đã Add thành công:
+[362|Heading 2] 🚀 BƯỚC 5: XÁC NHẬN THÀNH QUẢ (DEMO HIỂN THỊ ĐẦU TIÊN)
+[364|Heading 3] 5.1. Tạo Controller quản trị
+[368|Heading 5] using Microsoft.AspNetCore.Mvc;
+[369|Heading 5] using CMS.Data.Entities; // Kết nối tới lớp dữ liệu bạn vừa tạo
+[371|Heading 5] public class CategoryController : Controller {
+[372|Heading 5] public IActionResult Index() {
+[373|Heading 5] // Tạo danh sách dữ liệu mẫu trực tiếp trong code
+[374|Heading 5] var list = new List<Category> {
+[375|Heading 5] new Category { Id = 1, Name = "Tin Công Nghệ", Description = "Review Laptop, AI" },
+[376|Heading 5] new Category { Id = 2, Name = "Giáo Dục", Description = "Thông tin tuyển sinh" }
+[377|Heading 5] };
+[378|Heading 5] return View(list); // Gửi danh sách này sang giao diện
+[379|Heading 5] }
+[380|Heading 5] }
+[382|Heading 3] 5.2. Tạo Giao diện (View)
+[407|Heading 3] 5.3. Chạy dự án
+[412|Heading 2] 💡 TẠI SAO PHẢI LÀM BƯỚC NÀY?
+[415|Heading 2] ✍️ BÀI TẬP TỰ RÈN LUYỆN (CHALLENGE)
+[417|Heading 3] Thử thách 1: Quản lý bài viết (Post)
+[423|Heading 3] Thử thách 2: Quản lý người dùng (User)
+[430|Heading 2] 💡 GIẢI THÍCH  (TẠI SAO PHẢI LÀM?)
+[649|Heading 1] BUỔI 2: Kết nối Cơ sở dữ liệu với Entity Framework Core (EF Core).
+[650|Heading 1] KẾT NỐI DATABASE VÀ QUẢN TRỊ DỮ LIỆU THẬT
+[652|Heading 2] 🎯 Mục tiêu bài học
+[653|normal] Sau buổi này,  sẽ:
+[657|normal] Thay thế toàn bộ dữ liệu giả ở Buổi 1 bằng dữ liệu thật từ Database.
+[659|normal] Sau buổi này, sẽ:
+[662|normal] Thay thế toàn bộ "dữ liệu giả" của Buổi 1 bằng "dữ liệu thật" từ máy chủ.
+[664|Heading 2] 🏗️ PHẦN 1: CÀI ĐẶT THƯ VIỆN (NUGET PACKAGES)
+[678|Heading 2] 🗃️ PHẦN 2: TẠO LỚP QUẢN TRỊ KẾT NỐI (APPLICATIONDBCONTEXT)
+[709|Heading 2] ⚡ PHẦN 3: KỸ THUẬT CODE FIRST MIGRATION
+[759|Heading 2] 🚀 PHẦN 4: THAY THẾ DỮ LIỆU GIẢ BẰNG DỮ LIỆU THẬT
+[760|normal] quay lại các Controller đã làm ở Buổi 1 và sửa code:
+[779|Heading 2] 🏁 KẾT QUẢ CẦN ĐẠT (CHECKPOINT)
+[790|Heading 2] 💡 CÁC ĐIỂM CẦN LƯU Ý (TIPS)
+[792|Heading 1] HƯỚNG DẪN KIỂM TRA SQL SERVER TRƯỚC KHI CHẠY MIGRATION
+[793|Heading 2] Bước 1: Kiểm tra Dịch vụ (Service) đang chạy
+[800|Heading 2] Bước 2: Đăng nhập thử bằng SSMS
+[811|Heading 2] Bước 3: Kiểm tra quyền tạo Database
+[820|Heading 2] ✅ KẾT QUẢ CẦN ĐẠT CUỐI BUỔI 2
+[825|Heading 1] 📝 PHẦN BÀI TẬP RÈN LUYỆN: TỰ LÀM CHỦ DỮ LIỆU VỚI POST VÀ USER
+[828|Heading 2] 🏗️ BÀI TẬP 1: QUẢN LÝ BÀI VIẾT (TABLE POST)
+[829|Heading 3] Bước 1: Kiểm tra thực thể (Entity)
+[831|Heading 3] Bước 2: Nạp dữ liệu mẫu
+[835|Heading 3] Bước 3: Tạo Controller và hiển thị dữ liệu
+[846|Heading 2] 👤 BÀI TẬP 2: QUẢN LÝ NGƯỜI DÙNG (TABLE USER)
+[847|Heading 3] Bước 1: Nạp dữ liệu mẫu
+[851|Heading 3] Bước 2: Tạo chức năng xem danh sách thành viên
+[869|Heading 2] 👤 BÀI TẬP 3:  Liệt kê danh sách  (TABLE CategoriesProducts)
+[872|Heading 2] 👤 BÀI TẬP 4:  Liệt kê danh sách  (TABLE Products)
+[874|Heading 2] 👤 BÀI TẬP 5:  Liệt kê danh sách  (TABLE Customers)
+[876|Heading 2] 👤 BÀI TẬP 6:  Liệt kê danh sách  (TABLE Orders)
+[878|Heading 2] 👤 BÀI TẬP 7:  Liệt kê danh sách  (TABLE OrderDetails)
+[882|Heading 1] BUỔI 3: TRUY VẤN LINQ & THAO TÁC DỮ LIỆU CHUYÊN SÂU
+[884|normal] Sau khi kết thúc buổi học này,  có khả năng:
+[894|Heading 2] 1. ÔN TẬP & CHUẨN BỊ (5 PHÚT)
+[897|Heading 2] 2. TRUY VẤN DỮ LIỆU VỚI LINQ (CẦM TAY CHỈ VIỆC)
+[898|Heading 2] 2.1. Lọc dành mục theo tham số (where) và sắp xếp (orderby)
+[900|Heading 3] A. Mã nguồn trong Controller (PostController.cs)
+[923|Heading 3] B. Giải thích chi tiết
+[929|Heading 3] Giải thích chi tiết các "Mắt xích"
+[930|normal] _context.Posts: Điểm bắt đầu. Nó đại diện cho bảng dữ liệu trong SQL Server mà đã cấu hình ở Buổi 2.
+[943|Heading 3] C. Cách chạy thử để kiểm tra (Testing)
+[950|Heading 3] D. Lưu ý quan trọng (Tips)
+[954|Heading 3] 2.2. Kỹ thuật Join bảng (Include) - CỰC KỲ QUAN TRỌNG
+[991|Heading 2] 3. THAO TÁC DỮ LIỆU CHUYÊN SÂU (CRUD)
+[992|Heading 3] 3.1. Tìm kiếm và hiển thị chi tiết (Details)
+[1015|Heading 3] 3.2. Thêm mới dữ liệu (Create)
+[1017|Heading 3] A. Code xử lý tại Controller (CategoryController.cs)
+[1041|Heading 3] B. Giải thích quy trình 2 bước (Bắt buộc phải nhớ)
+[1046|Heading 3] C. Code giao diện nhập liệu (Create.cshtml)
+[1072|Heading 3] D. Ví dụ thực hành tại lớp
+[1096|Heading 3] 3.3  Xóa 1 danh mục trong Category
+[1136|Heading 3] A. Mã nguồn xử lý tại CategoryController.cs
+[1159|Heading 3] B. Giải thích các câu lệnh
+[1164|Heading 3] C. Ví dụ thực hành kiểm chứng (Lab 3)
+[1171|Heading 3] Lưu ý quan trọng về Ràng buộc toàn vẹn dữ liệu:
+[1175|Heading 3] 3.4. THỰC HIỆN CHỈNH SỬA DỮ LIỆU (UPDATE)
+[1179|Heading 3] A. Mã nguồn xử lý tại CategoryController.cs
+[1208|Heading 3] B. Giải thích các lệnh chính
+[1213|Heading 3] C. Tạo giao diện chỉnh sửa (Edit.cshtml)
+[1242|Heading 3] D. Thực hành kiểm chứng (Lab 3)
+[1254|Heading 2] 4. DỮ LIỆU MẪU THỰC HÀNH (LAB 3)
+[1256|Heading 3] 4.1. Bảng Danh mục (Table Category)
+[1258|Heading 3] 4.2. Bảng Bài viết (Table Post)
+[1260|Heading 3] 4.3. Bảng Người dùng (Table User)
+[1264|Heading 2] 5. BÀI TẬP TỰ RÈN LUYỆN (CHALLENGE)
+[1271|Heading 3] Bước 1: Chỉnh sửa Controller (Controllers/HomeController.cs)
+[1301|Heading 3] Bước 2: Giải thích cú pháp LINQ
+[1305|Heading 3] Bước 3: Cập nhật giao diện trang chủ (Views/Home/Index.cshtml)
+[1338|Heading 1] BUỔI 4: XÂY DỰNG GIAO DIỆN QUẢN TRỊ (ADMIN PANEL) TOÀN DIỆN
+[1344|Heading 2] 1. THIẾT KẾ SIDEBAR VÀ LAYOUT ADMIN (_LayoutAdmin.cshtml)
+[1346|Heading 3] A. Cấu trúc Sidebar bên trái
+[1348|Heading 3] B. Thực hành tạo Layout
+[1353|Heading 3] HƯỚNG DẪN TẠO LAYOUT QUẢN TRỊ (_LayoutAdmin.cshtml)
+[1362|Heading 2] a. CHUẨN BỊ FILE
+[1367|Heading 2] b. NỘI DUNG MÃ NGUỒN (CODE CHI TIẾT)
+[1437|Heading 2] c. GIẢI THÍCH CHI TIẾT CHO CHÚNG TA
+[1442|Heading 2] d. CÁCH ÁP DỤNG LAYOUT NÀY VÀO CÁC TRANG
+[1450|Heading 2] e. CÔNG DỤNG CỦA CÁC LIÊN KẾT TRÊN SIDEBAR
+[1455|Heading 2] 2. QUẢN TRỊ BÀI VIẾT (POST)
+[1498|Heading 2] 1)  Nhập mới bài viết (Post)
+[1500|Heading 3] A. Chuẩn bị dữ liệu tại PostController.cs
+[1543|Heading 4] Giải thích:
+1. HÀM HIỂN THỊ FORM (GET METHOD)
+[1549|Heading 4] 2. HÀM LƯU DỮ LIỆU VÀ XỬ LÝ FILE (POST METHOD)
+[1551|Heading 5] A. Tiếp nhận dữ liệu
+[1554|Heading 5] B. Quy trình xử lý File (4 bước "vàng")
+[1559|Heading 5] C. Ghi dữ liệu vào Database
+[1564|Heading 3] B. Giao diện biểu mẫu (Create.cshtml)
+[1630|Heading 2] 2)  Chức năng xóa bài viết (Delete)
+[1632|Heading 3] A. Tại PostController.cs
+[1651|Heading 3] B. Tại View (Index.cshtml)
+[1661|Heading 2] 3. Chức năng sửa bài viết (Edit)
+[1663|Heading 3] A. Tại PostController.cs
+[1716|Heading 3] B. Tại View (Edit.cshtml)
+[1725|Heading 2] 3. GIẢI THÍCH
+[1730|Heading 2] 💡 CÂU HỎI GỢI Ý ĐỂ CHÚNG TA THẢO LUẬN
+[1734|Heading 2] 1. TÍCH HỢP CKEDITOR VÀO TRANG CREATE.CSHTML
+[1736|Heading 3] Bước 1: Thêm thư viện vào View
+[1752|Heading 3] Bước 2: Kiểm tra ID của thẻ Textarea
+[1761|Heading 2] 2. HIỂN THỊ NỘI DUNG RA NGOÀI (VIEW DETAILS/INDEX)
+[1771|Heading 1] Bài tập tự thực hành:
+[1775|Heading 1] PHẦN BỔ SUNG: QUẢN TRỊ THÀNH VIÊN HOÀN CHỈNH
+[1786|Heading 2] 1. CẬP NHẬT GIAO DIỆN THÊM MỚI (VIEWS/USER/CREATE.CSHTML)
+[1841|Heading 2] 2. XỬ LÝ LƯU DỮ LIỆU TẠI CONTROLLER (USERCONTROLLER.CS)
+[1864|Heading 2] 3. LƯU Ý QUAN TRỌNG KHI THỰC HIỆN
+[1869|Heading 2] 4. GIẢI THÍCH CHO NGƯỜI HỌC
+[1872|normal] Hoàn tất phần này, hệ thống của chúng ta đã sẵn sàng 100% về mặt dữ liệu để triển khai phần Authentication & Authorization ở Buổi 5.
+[1877|Heading 1] THAO TÁC SỬA VÀ XÓA THÀNH VIÊN (USER EDIT & DELETE)
+[1889|Heading 2] 1. CHỨC NĂNG SỬA THÀNH VIÊN (USER EDIT)
+[1891|Heading 3] A. Tại UserController.cs
+[1930|Heading 3] B. Tại View (Views/User/Edit.cshtml)
+[1982|Heading 2] 2. CHỨC NĂNG XÓA THÀNH VIÊN (USER DELETE)
+[1983|Heading 3] A. Tại UserController.cs
+[1997|Heading 3] B. Tại View (Index.cshtml)
+[2007|Heading 2] 3. GIẢI THÍCH CHO SINH VIÊN
+[2012|Heading 2] 4. BÀI TẬP KIỂM CHỨNG (CHECKPOINT)
+[2017|Heading 1] BUỔI 5: BẢO MẬT & PHÂN QUYỀN (SECURITY & IDENTITY)
+[2024|Heading 2] 1. KHÁI NIỆM TRỌNG TÂM: LOGIN FLOW
+[2029|Heading 2] 2. THỰC HÀNH
+[2030|Heading 1] Phần A: Xây dựng trang đăng nhập (Login)
+[2036|Heading 2] BƯỚC 1: CẤU HÌNH DỊCH VỤ XÁC THỰC (PROGRAM.CS)
+[2056|Heading 2] BƯỚC 2: TẠO ACCOUNTCONTROLLER
+[2084|Heading 2] BƯỚC 3: THIẾT KẾ GIAO DIỆN ĐĂNG NHẬP (LOGIN.CSHTML)
+[2130|Heading 2] BƯỚC 4: XỬ LÝ LOGIC ĐĂNG NHẬP (POST METHOD)
+[2171|Heading 2] BƯỚC 5: GIẢI THÍCH CÁC KHÁI NIỆM CƠ BẢN
+[2177|Heading 2] BƯỚC 6: KIỂM CHỨNG KẾT QUẢ (CHECKPOINT)
+[2181|Heading 1] Phần B: BẢO VỆ CÁC TRANG QUẢN TRỊ (AUTHORIZATION)
+[2187|Heading 2] BƯỚC 1: KHÓA TRANG ADMIN (AUTHENTICATION CHECK)
+[2205|Heading 2] BƯỚC 2: PHÂN QUYỀN THEO VAI TRÒ (ROLE-BASED)
+[2217|Heading 2] BƯỚC 3: HIỂN THỊ THÔNG TIN NGƯỜI DÙNG TRÊN LAYOUT
+[2237|Heading 2] BƯỚC 4: XỬ LÝ TRANG TỪ CHỐI TRUY CẬP (ACCESS DENIED)
+[2260|Heading 2] BƯỚC 5: KIỂM CHỨNG KẾT QUẢ (CHECKPOINT)
+[2267|Heading 1] BUỔI 6: WEB API & RESTFUL SERVICE
+[2272|normal] Tạo "cửa ngõ" dữ liệu để Buổi 7 kết nối với giao diện ReactJS.
+[2274|Heading 2] 1. KHÁI NIỆM TRỌNG TÂM: API LÀ GÌ?
+[2278|Heading 3] 1. Sự khác biệt giữa Web truyền thống (MVC) và Web hiện đại (API + Frontend)
+[2279|Heading 4] Cách làm cũ (ASP.NET Core MVC):
+[2282|Heading 4] Cách làm hiện đại (Web API):
+[2287|Heading 3] 2. JSON là gì? (Ngôn ngữ chung của thế giới số)
+[2295|normal] "title": "Học lập trình Web Buổi 6",
+[2303|Heading 3] 3. API - "Thực đơn" của Server dành cho Client
+[2309|Heading 3] 4. Tại sao Backend chỉ trả về dữ liệu thô?
+[2312|Heading 2] 2. NỘI DUNG THỰC HÀNH
+[2313|Heading 3] Phần 1: CẤU HÌNH KIẾN TRÚC LAI (HYBRID) VÀ KHỞI TẠO API CONTROLLER
+[2315|Heading 4] BƯỚC 1: CÀI ĐẶT THƯ VIỆN SWAGGER TRUNG GIAN
+[2322|Heading 4] BƯỚC 2: CẤU HÌNH SONG HÀNH TRONG FILE PROGRAM.CS
+[2374|Heading 4] BƯỚC 3: THAO TÁC TẠO FILE CONTROLLER TRÊN VISUAL STUDIO
+[2381|Heading 4] BƯỚC 4: VIẾT MÃ NGUỒN CƠ BẢN
+[2410|Heading 4] BƯỚC 5: GIẢI THÍCH CHI TIẾT CÁC THÀNH PHẦN
+[2414|Heading 3] Phần 2: API LẤY DANH SÁCH BÀI VIẾT (GET METHOD)
+[2417|Heading 3] BƯỚC 1: VIẾT HÀM LẤY TOÀN BỘ BÀI VIẾT
+[2461|Heading 3] Phần 3: API CHI TIẾT BÀI VIẾT (GET BY ID)
+[2485|Heading 3] Phần 4: CẤU HÌNH CHÍNH SÁCH BẢO MẬT CORS (BẬT ĐÈN XANH CHO REACTJS)
+[2504|Heading 3] Phần 5: HƯỚNG DẪN KIỂM THỬ TOÀN DIỆN VỚI SWAGGER VÀ POSTMAN
+[2506|Heading 4] 5.1 Kiểm thử trực tiếp thông qua giao diện tự động Swagger UI
+[2518|Heading 4] 5.2 Kiểm thử bằng phần mềm Postman (Quy trình doanh nghiệp thực tế)
+[2524|Heading 3] 6. GIẢI THÍCH CÁC TRẠNG THÁI HTTP (STATUS CODES) TRONG BÀI GIẢNG
+[2536|Heading 3] 7. CHECKPOINT CUỐI GIỜ THỰC HÀNH BUỔI 6 (TIÊU CHÍ NGHIỆM THU)
+[2546|Heading 3] BÀI TẬP THỰC HÀNH MỞ RỘNG (NÂNG CAO) – BUỔI 6
+[2547|Heading 4] I. ĐỀ BÀI: XÂY DỰNG API CHO THỰC THỂ DANH MỤC SẢN PHẨM (CATEGORY PRODUCT)
+[2554|Heading 4] II. HƯỚNG DẪN GIẢI THÍCH TỪNG BƯỚC (STEP-BY-STEP)
+[2559|Heading 4] III. MÃ NGUỒN MẪU CÓ GHI CHÚ CHI TIẾT (SOURCE CODE)
+[2623|Heading 4] IV. TIÊU CHÍ NGHIỆM THU (CHECKPOINT DÀNH CHO GIẢI PHÁP)
+[2630|Heading 2] 3 bài tập thực hành mở rộng
+[2632|Heading 3] BÀI TẬP 1: API QUẢN LÝ SẢN PHẨM (GET PRODUCTS BY CATEGORY & DETAIL)
+[2634|Heading 4] 1. Hướng dẫn logic xử lý
+[2638|Heading 4] 2. Mã nguồn API mẫu (C#)
+[2712|Heading 3] BÀI TẬP 2: API THÊM MỚI ĐƠN HÀNG (POST METHOD - SUBMIT ORDER)
+[2714|Heading 4] 1. Hướng dẫn logic xử lý
+[2718|Heading 4] 2. Mã nguồn API mẫu (C#)
+[2788|Heading 3] BÀI TẬP 3: KIỂM THỬ NÂNG CAO VỚI POSTMAN (GỬI GÓI TIN ĐỂ ĐẶT HÀNG)
+[2790|Heading 4] 1. Hướng dẫn các bước thực hành trên lớp cho sinh viên:
+[2808|Heading 3] 🎯 TIÊU CHÍ KIỂM TRA CHUNG (CHECKPOINT)
+[2809|Heading 3] Sinh viên trước khi lên nộp bài phải mở trình duyệt thực hiện kiểm tra song hành tính toàn vẹn (Hybrid Rule):
+[2818|Heading 1] BUỔI 7 – KẾT NỐI FRONTEND REACTJS VỚI BACKEND ASP.NET CORE WEB API
+[2822|Heading 3] MỤC TIÊU CỦA BUỔI HỌC
+[2828|Heading 3] TÌNH TRẠNG SOLUTION CÓ SẴN (TỪ BUỔI 1)
+[2834|Heading 2] PHẦN 1: CẤU HÌNH CORS TRÊN BACKEND (MỞ CỬA CHO FRONTEND)
+[2836|Heading 3] Bước 1.1: Khai báo dịch vụ CORS trong File Program.cs
+[2851|Heading 3] Bước 1.2: Kích hoạt Middleware CORS
+[2863|Heading 2] PHẦN 2: THIẾT LẬP HTTP CLIENT (AXIOS) TRÊN FRONTEND REACTJS
+[2872|Heading 3] Bước 2.1: Cài đặt thư viện Axios
+[2877|Heading 3] Bước 2.2: Tạo File cấu hình Axios tập trung (Base API)
+[2909|Heading 1] PHẦN 3: XÂY DỰNG GIAO DIỆN HIỂN THỊ DANH MỤC SẢN PHẨM (CATEGORY PRODUCT)
+[2911|Heading 3] 📝 Bước 3.0.1: Kiểm tra Web Api tên CategoriesProducts đã xây dựng chưa và chạy tốt chưa
+[2913|Heading 3] 📝 Bước 3.0.2: Khai báo sử dụng Bootstrap cho giao diện
+[2917|Heading 3] 📝 Bước 3.1: Viết API Service riêng cho CategoryProduct
+[2941|Heading 3] 📝 Bước 3.2: Tạo Component Giao diện danh mục
+[2942|Heading 3] CategoryProductList.jsx
+[3021|Heading 3] 📝 Bước 3.3: Gắn Component vào ứng dụng chính App.js
+[3067|Heading 2] PHẦN 4: HƯỚNG DẪN KIỂM TRA & SỬA LỖI NHANH (TROUBLESHOOTING)
+[3077|normal] 🎯 YÊU CẦU HOÀN THÀNH CƠ BẢN (CHECKPOINT BUỔI 7)
+[3080|Heading 3] BÀI TẬP THỰC HÀNH TỰ LÀM (MỞ RỘNG BUỔI 7)
+[3083|Heading 3] I. CHỨC NĂNG CỦA BÀI THỰC HÀNH MỞ RỘNG
+[3089|Heading 3] II. LÝ DO VÀ Ý NGHĨA CỦA BÀI THỰC HÀNH MỞ RỘNG
+[3095|Heading 3] III. CÁC BƯỚC THỰC HIỆN TỪNG BƯỚC (STEP-BY-STEP)
+[3096|Heading 4] Bước 1: Viết API Service cho Product
+[3111|Heading 4] Bước 2: Tạo Component hiển thị danh sách sản phẩm
+[3172|Heading 4] Bước 3: Gắn Component vào giao diện ứng dụng chính
+[3208|Heading 3] IV. TIÊU CHÍ NGHIỆM THU (CHECKPOINT)
+[3213|normal] BÀI TẬP THỰC HÀNH TỰ LÀM (MỞ RỘNG BUỔI 7 - PHẦN TIN TỨC)
+[3216|Heading 3] I. CHỨC NĂNG CỦA BÀI THỰC HÀNH MỞ RỘNG
+[3222|Heading 3] II. LÝ DO VÀ Ý NGHĨA CỦA BÀI THỰC HÀNH MỞ RỘNG
+[3227|Heading 3] III. CÁC BƯỚC THỰC HIỆN TỪNG BƯỚC (STEP-BY-STEP)
+[3228|Heading 4] Bước 1: Viết API Service cho Blog (blogService.js)
+[3249|Heading 4] Bước 2: Tạo Component hiển thị danh sách bài viết (PostList.jsx)
+[3321|Heading 4] Bước 3: Đưa cấu trúc tin tức vào giao diện tổng thể (App.js)
+[3362|Heading 3] IV. TIÊU CHÍ NGHIỆM THU THỰC HÀNH MỞ RỘNG (CHECKPOINT)
+[3369|Heading 1] BUỔI 8 – GỌI API TỪ REACTJS & HOOK USEEFFECT
+[3374|Heading 3] MỤC TIÊU CỦA BUỔI HỌC
+[3380|Heading 3] PHẦN 1: BẢN CHẤT HOẠT ĐỘNG CỦA HOOK USEEFFECT VÀ QUY TRÌNH GỌI API
+[3384|Heading 2] PHẦN 2: CÁC BƯỚC THỰC HIỆN TỪNG BƯỚC (STEP-BY-STEP)
+[3386|Heading 3] Bước 2.1: Xây dựng hàm gọi API bài viết (blogService.js)
+[3409|Heading 3] Bước 2.2: Tạo Component Giao diện Tin tức (PostList.jsx)
+[3506|Heading 3] Bước 2.3: Nhúng Component vào trang chủ ứng dụng (App.js)
+[3525|normal] {/* Cột trái: Bộ lọc Phân loại sản phẩm thời trang (Đã làm ở buổi trước) */}
+[3546|Heading 2] PHẦN 3: HƯỚNG DẪN KIỂM TRA & SỬA LỖI NHANH (TROUBLESHOOTING)
+[3555|Heading 3] BÀI TẬP THỰC HÀNH TỰ LÀM (MỞ RỘNG TẠI LỚP CHO BUỔI 8)
+[3556|Heading 4] I. Chức năng của bài thực hành mở rộng
+[3560|Heading 4] II. Lý do và ý nghĩa của bài thực hành mở rộng
+[3563|Heading 4] III. Tiêu chí nghiệm thu bài làm (Checkpoint)
+[3567|Heading 3] HƯỚNG DẪN THỰC HÀNH CHI TIẾT: BÀI TẬP MỞ RỘNG BUỔI 8
+[3570|Heading 3] BƯỚC 1: VIẾT HÀM GỌI API CHO CHUYÊN MỤC TIN TỨC
+[3593|Heading 3] BƯỚC 2: TẠO COMPONENT GIAO DIỆN BLOGCATEGORYLIST.JSX
+[3656|Heading 3] BƯỚC 3: RÁP NỐI THÀNH PHẦN VÀO GIAO DIỆN TỔNG THỂ
+[3679|normal] {/* Phân loại phục vụ thương mại điện tử (Đã làm ở buổi trước) */}
+[3702|Heading 3] V. TIÊU CHÍ NGHIỆM THU TẠI LỚP (CHECKPOINT)

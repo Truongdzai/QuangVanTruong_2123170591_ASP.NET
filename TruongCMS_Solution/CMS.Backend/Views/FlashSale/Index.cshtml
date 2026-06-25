@@ -1,0 +1,82 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Nang cap theo BAO CAO NGHIEN CUU: quan tri Flash Sale (muc 5 — Marketing)
+*@
+@model IEnumerable<CMS.Data.Entities.FlashSale>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Flash Sale"; var now = DateTime.Now; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-lightning-charge-fill text-warning"></i> CHƯƠNG TRÌNH FLASH SALE</h4>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Tạo chương trình</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:60px">ID</th>
+                    <th>Tên chương trình</th>
+                    <th style="width:170px">Bắt đầu</th>
+                    <th style="width:170px">Kết thúc</th>
+                    <th style="width:80px" class="text-center">Số SP</th>
+                    <th style="width:130px" class="text-center">Tình trạng</th>
+                    <th style="width:130px" class="text-center">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model)
+                {
+                    bool dangChay = f.IsActive && f.StartTime <= now && f.EndTime > now;
+                    <tr>
+                        <td class="fw-bold">#@f.Id</td>
+                        <td class="fw-bold">@f.Name</td>
+                        <td class="small">@f.StartTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="small">@f.EndTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="text-center"><span class="badge bg-secondary">@f.Items.Count</span></td>
+                        <td class="text-center">
+                            @if (dangChay)
+                            {
+                                <span class="badge bg-success"><i class="bi bi-broadcast"></i> ĐANG CHẠY</span>
+                            }
+                            else if (!f.IsActive)
+                            {
+                                <span class="badge bg-secondary">Đã tắt</span>
+                            }
+                            else if (f.EndTime <= now)
+                            {
+                                <span class="badge bg-dark">Đã kết thúc</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-info text-dark">Sắp diễn ra</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@f.Id" class="btn btn-sm btn-warning me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@f.Id" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Xóa chương trình @f.Name?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">
+        Hết khung giờ, giá trên web <b>tự quay về giá gốc</b> — backend kiểm tra giờ server
+        mỗi lần tính giá (không tin đồng hồ trình duyệt khách).
+    </div>
+</div>

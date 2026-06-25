@@ -1,0 +1,93 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 11 (Quan ly banner dong)
+    Ngay thuc hien: 12/06/2026
+    Version: 2.0
+*@
+@model CMS.Data.Entities.Banner
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Them banner"; }
+
+<div class="card shadow" style="max-width:760px">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-plus-circle"></i> THEM BANNER TRANG CHU</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tieu de (dong chu lon): <span class="text-danger">*</span></label>
+                <input asp-for="Title" class="form-control" placeholder="Vi du: BO SUU TAP HE 2026" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mo ta ngan:</label>
+                <textarea asp-for="Subtitle" class="form-control" rows="2"
+                          placeholder="Dong mo ta nho hien duoi tieu de..."></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Upload anh tu may:</label>
+                    <input type="file" name="uploadImage" class="form-control" accept="image/*"
+                           onchange="xemTruocAnh(this)" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">HOAC dan link anh:</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="https://..."
+                           oninput="document.getElementById('anhXemTruoc').src = this.value" />
+                    <div class="form-text">Chon file thi he thong uu tien file upload.</div>
+                </div>
+            </div>
+
+            <img id="anhXemTruoc" src="/images/no-image.svg"
+                 class="rounded border mb-3" style="height:160px;object-fit:cover;width:100%"
+                 onerror="this.src='/images/no-image.svg'" />
+
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label class="form-label fw-bold">Link khi bam nut:</label>
+                    <input asp-for="LinkUrl" class="form-control" placeholder="/products?filter=new" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Chu tren nut:</label>
+                    <input asp-for="ButtonText" class="form-control" placeholder="Mua ngay" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label fw-bold">Thu tu:</label>
+                    <input asp-for="SortOrder" type="number" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                <label class="form-check-label fw-bold" asp-for="IsActive">Hien thi tren trang chu</label>
+            </div>
+
+            <span class="text-danger">@Html.ValidationMessage("ImageUrl")</span>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Luu banner
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lai
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function xemTruocAnh(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('anhXemTruoc').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+}

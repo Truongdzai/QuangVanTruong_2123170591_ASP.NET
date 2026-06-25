@@ -1,0 +1,90 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 11 (Quan ly KHO — nhap hang tu cac hang)
+    Ngay thuc hien: 12/06/2026
+    Version: 2.0
+*@
+@model IEnumerable<CMS.Data.Entities.StockReceipt>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Kho"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-box-seam-fill"></i> QUAN LY KHO — NHAP HANG TU CAC HANG</h4>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Lap phieu nhap moi
+    </a>
+</div>
+
+@* 3 the thong ke nhanh *@
+<div class="row mb-3">
+    <div class="col-md-4">
+        <div class="card text-bg-primary"><div class="card-body py-2">
+            <div class="small">Tong so phieu nhap</div>
+            <h4 class="mb-0">@ViewBag.TongPhieu</h4>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-success"><div class="card-body py-2">
+            <div class="small">Tong so luong da nhap</div>
+            <h4 class="mb-0">@ViewBag.TongSoLuong</h4>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-bg-dark"><div class="card-body py-2">
+            <div class="small">Tong tien nhap hang</div>
+            <h4 class="mb-0">@(((decimal)ViewBag.TongTienNhap).ToString("N0")) đ</h4>
+        </div></div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:55px">ID</th>
+                    <th style="width:135px">Ngay nhap</th>
+                    <th style="width:160px">Hang cung cap</th>
+                    <th>San pham</th>
+                    <th style="width:90px" class="text-center">So luong</th>
+                    <th style="width:120px" class="text-end">Gia nhap/dv</th>
+                    <th style="width:130px" class="text-end">Thanh tien</th>
+                    <th style="width:100px" class="text-center">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@item.Id</td>
+                        <td>@item.ReceiptDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-info text-dark">@item.SupplierName</span></td>
+                        <td>
+                            @item.Product?.Name
+                            @if (!string.IsNullOrEmpty(item.Notes))
+                            {
+                                <div class="text-muted small">@item.Notes</div>
+                            }
+                        </td>
+                        <td class="text-center fw-bold text-success">+@item.Quantity</td>
+                        <td class="text-end">@item.UnitCost.ToString("N0")</td>
+                        <td class="text-end fw-bold">@((item.UnitCost * item.Quantity).ToString("N0"))</td>
+                        <td class="text-center">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Xoa phieu #@item.Id va HOAN lai @item.Quantity san pham khoi ton kho?')">
+                                    <i class="bi bi-trash"></i> Xoa
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">
+        Xoa phieu nhap se tu dong HOAN TRU lai so luong khoi ton kho san pham.
+    </div>
+</div>

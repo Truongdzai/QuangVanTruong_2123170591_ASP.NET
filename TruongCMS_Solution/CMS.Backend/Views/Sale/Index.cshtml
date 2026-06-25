@@ -1,0 +1,87 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 11 (Quan ly Sale / Ma giam gia)
+    Ngay thuc hien: 12/06/2026
+    Version: 2.0
+*@
+@model IEnumerable<CMS.Data.Entities.DiscountCode>
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Sale"; }
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0"><i class="bi bi-tags"></i> QUAN LY SALE / MA GIAM GIA</h4>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Tao ma moi
+    </a>
+</div>
+
+<div class="alert alert-secondary small">
+    <i class="bi bi-info-circle"></i> Ma co <strong>Khach hang</strong> = ma chao mung he thong
+    tu sinh khi khach dang ky (dung 1 lan). Ma khong co = ma cong khai (sale chung).
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover table-bordered mb-0 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:55px">ID</th>
+                    <th style="width:160px">Ma</th>
+                    <th>Mo ta</th>
+                    <th style="width:80px" class="text-center">Giam</th>
+                    <th style="width:120px" class="text-center">Han dung</th>
+                    <th style="width:110px" class="text-center">Da dung</th>
+                    <th style="width:95px" class="text-center">Khach hang</th>
+                    <th style="width:95px" class="text-center">Trang thai</th>
+                    <th style="width:160px" class="text-center">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    bool hetHan = item.ExpiryDate.HasValue && item.ExpiryDate.Value < DateTime.Now;
+                    <tr class="@(item.IsActive && !hetHan ? "" : "table-secondary")">
+                        <td class="text-muted">@item.Id</td>
+                        <td><span class="badge bg-dark fs-6">@item.Code</span></td>
+                        <td class="small">@item.Description</td>
+                        <td class="text-center text-success fw-bold">-@item.Percent%</td>
+                        <td class="text-center small">
+                            @(item.ExpiryDate?.ToString("dd/MM/yyyy") ?? "Khong gioi han")
+                            @if (hetHan) { <span class="badge bg-danger">Het han</span> }
+                        </td>
+                        <td class="text-center">
+                            @item.UsedCount / @(item.MaxUses == 0 ? "∞" : item.MaxUses.ToString())
+                        </td>
+                        <td class="text-center small">
+                            @(item.CustomerId.HasValue ? $"#{item.CustomerId}" : "—")
+                        </td>
+                        <td class="text-center">
+                            @if (item.IsActive)
+                            {
+                                <a asp-action="ToggleActive" asp-route-id="@item.Id" class="badge bg-success text-decoration-none">Bat</a>
+                            }
+                            else
+                            {
+                                <a asp-action="ToggleActive" asp-route-id="@item.Id" class="badge bg-secondary text-decoration-none">Tat</a>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">
+                                <i class="bi bi-pencil"></i> Sua
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Xoa ma [@item.Code]?')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer text-muted small">Tong cong: @Model.Count() ma giam gia</div>
+</div>

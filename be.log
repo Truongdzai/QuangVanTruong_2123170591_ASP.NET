@@ -1,0 +1,23 @@
+Using launch settings from D:\asp.NET\TruongCMS_Solution\CMS.Backend\Properties\launchSettings.json...
+Building...
+D:\asp.NET\TruongCMS_Solution\CMS.Data\CMS.Data.csproj : warning NU1903: Package 'System.Security.Cryptography.Xml' 9.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-37gx-xxp4-5rgx [D:\asp.NET\TruongCMS_Solution\CMS.Backend\CMS.Backend.csproj]
+D:\asp.NET\TruongCMS_Solution\CMS.Data\CMS.Data.csproj : warning NU1903: Package 'System.Security.Cryptography.Xml' 9.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-w3x6-4m5h-cxqf [D:\asp.NET\TruongCMS_Solution\CMS.Backend\CMS.Backend.csproj]
+D:\asp.NET\TruongCMS_Solution\CMS.Data\CMS.Data.csproj : warning NU1903: Package 'System.Security.Cryptography.Xml' 9.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-37gx-xxp4-5rgx
+D:\asp.NET\TruongCMS_Solution\CMS.Data\CMS.Data.csproj : warning NU1903: Package 'System.Security.Cryptography.Xml' 9.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-w3x6-4m5h-cxqf
+[15:53:22 INF] Now listening on: http://localhost:5232
+[15:53:22 INF] Application started. Press Ctrl+C to shut down.
+[15:53:22 INF] Hosting environment: Development
+[15:53:22 INF] Content root path: D:\asp.NET\TruongCMS_Solution\CMS.Backend
+[15:53:22 INF] HTTP GET /api/footer responded 200 in 256.9001 ms
+[15:53:44 INF] HTTP GET /api/footer responded 200 in 13.1249 ms
+[15:54:00 INF] HTTP POST /Account/Login responded 302 in 71.0218 ms
+[15:54:01 INF] HTTP GET /Product/Create responded 200 in 159.2521 ms
+[15:54:01 INF] HTTP GET /Product/Edit/1 responded 200 in 114.9760 ms
+[15:54:01 INF] HTTP GET /Category responded 200 in 84.9865 ms
+[15:54:01 INF] HTTP GET /CategoryProduct responded 200 in 118.0021 ms
+[15:54:01 INF] HTTP GET /Customer responded 200 in 86.4417 ms
+[15:54:01 INF] HTTP GET /User responded 200 in 44.1685 ms
+[15:56:15 INF] HTTP POST /Account/Login responded 302 in 22.7293 ms
+[15:56:15 INF] HTTP GET /Product/Edit/1 responded 200 in 11.9031 ms
+[15:56:15 INF] HTTP GET /Customer responded 200 in 9.7309 ms
+[15:56:15 INF] HTTP GET /Customer responded 200 in 104.7232 ms

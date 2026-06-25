@@ -105,6 +105,30 @@
                     <a class="nav-link" asp-controller="Customer" asp-action="Index">
                         <i class="bi bi-person-lines-fill"></i> Khach hang
                     </a>
+                    @* Buoi 11: Sale + Kho hang *@
+                    <a class="nav-link" asp-controller="Sale" asp-action="Index">
+                        <i class="bi bi-percent"></i> Sale / Ma giam gia
+                    </a>
+                    <a class="nav-link" asp-controller="FlashSale" asp-action="Index">
+                        <i class="bi bi-lightning-charge"></i> Flash Sale
+                    </a>
+                    <a class="nav-link" asp-controller="Inventory" asp-action="Index">
+                        <i class="bi bi-box-arrow-in-down"></i> Kho hang (Nhap hang)
+                    </a>
+                    <a class="nav-link" asp-controller="Reports" asp-action="Index">
+                        <i class="bi bi-graph-up-arrow"></i> Bao cao &amp; Thong ke
+                    </a>
+
+                    <hr class="divider mx-3" />
+
+                    @* ---- Giao dien trang chu ---- *@
+                    <div class="nav-label">Giao dien</div>
+                    <a class="nav-link" asp-controller="Banner" asp-action="Index">
+                        <i class="bi bi-images"></i> Banner trang chu
+                    </a>
+                    <a class="nav-link" asp-controller="Footer" asp-action="Index">
+                        <i class="bi bi-layout-text-window-reverse"></i> Footer dong
+                    </a>
 
                     <hr class="divider mx-3" />
 
@@ -113,6 +137,15 @@
                     <a class="nav-link" asp-controller="User" asp-action="Index">
                         <i class="bi bi-people"></i> Thanh vien quan tri
                     </a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="nav-link" href="/hangfire" target="_blank">
+                            <i class="bi bi-cpu"></i> Tac vu nen (Hangfire)
+                        </a>
+                        <a class="nav-link" href="/swagger" target="_blank">
+                            <i class="bi bi-filetype-json"></i> Swagger API
+                        </a>
+                    }
 
                 </div>
             </nav>

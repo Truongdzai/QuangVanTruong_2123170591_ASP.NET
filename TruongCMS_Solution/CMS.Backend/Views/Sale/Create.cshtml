@@ -1,0 +1,78 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 11 (Quan ly Sale / Ma giam gia)
+    Ngay thuc hien: 12/06/2026
+    Version: 2.0
+*@
+@model CMS.Data.Entities.DiscountCode
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Tao ma giam gia"; }
+
+<div class="card shadow" style="max-width:620px">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-tag"></i> TAO MA GIAM GIA / CHUONG TRINH SALE</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="row">
+                <div class="col-md-7 mb-3">
+                    <label class="form-label fw-bold">Ma (khach se nhap o gio hang): <span class="text-danger">*</span></label>
+                    <input asp-for="Code" class="form-control text-uppercase" placeholder="Vi du: SALE50, TET2026" required />
+                    <span class="text-danger">@Html.ValidationMessage("Code")</span>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <label class="form-label fw-bold">Giam (%): <span class="text-danger">*</span></label>
+                    <input asp-for="Percent" type="number" min="1" max="100" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mo ta chuong trinh:</label>
+                <textarea asp-for="Description" class="form-control" rows="2"
+                          placeholder="Vi du: Sale he 2026 - giam 50% toan bo san pham..."></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Han su dung:</label>
+                    <input asp-for="ExpiryDate" type="date" class="form-control" />
+                    <div class="form-text">Bo trong = khong gioi han thoi gian.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">So luot dung toi da:</label>
+                    <input asp-for="MaxUses" type="number" min="0" class="form-control" />
+                    <div class="form-text">0 = khong gioi han so luot.</div>
+                </div>
+            </div>
+
+            @* Nang cap theo bao cao nghien cuu: dieu kien ap ma (test case 7-8) *@
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Don hang toi thieu:</label>
+                    <input asp-for="MinOrderAmount" type="number" min="0" step="0.01" class="form-control" />
+                    <div class="form-text">VD: 500 = chi ap cho don tu 500. 0 = khong yeu cau.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">So lan moi khach duoc dung:</label>
+                    <input asp-for="MaxUsesPerCustomer" type="number" min="0" class="form-control" />
+                    <div class="form-text">VD: 1 = moi khach 1 lan. 0 = khong gioi han.</div>
+                </div>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                <label class="form-check-label fw-bold" asp-for="IsActive">Kich hoat ngay</label>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Tao ma
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lai
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
+    Bai thuc hanh: 11 (Quan ly KHO — lap phieu nhap)
+    Ngay thuc hien: 12/06/2026
+    Version: 2.0
+*@
+@model CMS.Data.Entities.StockReceipt
+
+@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Lap phieu nhap kho"; }
+
+<div class="card shadow" style="max-width:620px">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-box-arrow-in-down"></i> LAP PHIEU NHAP KHO</h5>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Hang cung cap: <span class="text-danger">*</span></label>
+                <input asp-for="SupplierName" class="form-control" list="dsHang"
+                       placeholder="Vi du: Coolmate, Nike, Adidas..." required />
+                @* Goi y nhanh cac hang quen thuoc — van go tu do duoc *@
+                <datalist id="dsHang">
+                    <option value="Coolmate" />
+                    <option value="Nike" />
+                    <option value="Adidas" />
+                    <option value="Uniqlo" />
+                    <option value="Zara" />
+                    <option value="H&M" />
+                    <option value="Gucci" />
+                    <option value="Louis Vuitton" />
+                </datalist>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">San pham nhap: <span class="text-danger">*</span></label>
+                <select asp-for="ProductId" class="form-select" asp-items="ViewBag.ProductList" required>
+                    <option value="">-- Chon san pham --</option>
+                </select>
+                <span class="text-danger">@Html.ValidationMessage("ProductId")</span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">So luong: <span class="text-danger">*</span></label>
+                    <input asp-for="Quantity" type="number" min="1" class="form-control" required />
+                    <span class="text-danger">@Html.ValidationMessage("Quantity")</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Gia nhap / don vi:</label>
+                    <input asp-for="UnitCost" type="number" min="0" step="1000" class="form-control" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Ngay nhap:</label>
+                    <input asp-for="ReceiptDate" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Ghi chu:</label>
+                <input asp-for="Notes" class="form-control" placeholder="Lo hang dot 2, hoa don so..." />
+            </div>
+
+            <div class="alert alert-secondary small">
+                <i class="bi bi-info-circle"></i> Luu phieu xong, he thong tu dong
+                <strong>CONG so luong vao ton kho</strong> cua san pham.
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Luu phieu nhap
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lai
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

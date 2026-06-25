@@ -18,9 +18,19 @@ public class OrderDetail
     [Column(TypeName = "decimal(18,2)")]
     public decimal UnitPrice { get; set; } // Giá tại thời điểm đặt (có thể khác giá hiện tại)
 
+    /// <summary>Biến thể SKU khách chọn (null = sản phẩm không có biến thể)</summary>
+    public int? ProductVariantId { get; set; }
+
+    /// <summary>Chốt nhãn biến thể tại thời điểm mua, VD "Trắng / Medium"</summary>
+    [StringLength(100)]
+    public string? VariantLabel { get; set; }
+
     [ForeignKey(nameof(OrderId))]
     public virtual Order? Order { get; set; }
 
     [ForeignKey(nameof(ProductId))]
     public virtual Product? Product { get; set; }
+
+    [ForeignKey(nameof(ProductVariantId))]
+    public virtual ProductVariant? ProductVariant { get; set; }
 }

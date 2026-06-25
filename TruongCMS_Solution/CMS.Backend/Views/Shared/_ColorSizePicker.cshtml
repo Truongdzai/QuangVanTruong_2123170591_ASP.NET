@@ -1,0 +1,154 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    BO CHON MAU (swatch) + CHON SIZE (chip) dung chung cho Product Create/Edit.
+    - Click o mau cua shop de chon/bo; them mau tuy y bang bang chon mau (input color).
+    - Click chip size; them size tuy y bang o nhap.
+    - Tu ghi gia tri CSV vao 2 hidden input: name="Colors" / name="Sizes".
+    Goi bang: <partial name="_ColorSizePicker" view-data='new ViewDataDictionary(ViewData){ ["CurrentColors"]=Model.Colors, ["CurrentSizes"]=Model.Sizes }' />
+*@
+@{
+    string currentColors = (ViewData["CurrentColors"] as string) ?? "";
+    string currentSizes  = (ViewData["CurrentSizes"]  as string) ?? "";
+
+    // 10 mau chuan cua shop (khop o tron sidebar bo loc FrontEnd)
+    var palette = new (string Hex, string Name)[]
+    {
+        ("#000000","Đen"), ("#FFFFFF","Trắng"), ("#F50606","Đỏ"), ("#F5DD06","Vàng"),
+        ("#F57906","Cam"), ("#00C12B","Xanh lá"), ("#06CAF5","Xanh da trời"),
+        ("#063AF5","Xanh dương"), ("#7D06F5","Tím"), ("#F506A4","Hồng"),
+    };
+    var sizeOptions = new[] { "X-Small", "Small", "Medium", "Large", "X-Large", "XX-Large" };
+}
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label fw-bold">Màu sắc <span class="text-muted">(bấm chọn)</span>:</label>
+        <div id="csp-colors" class="d-flex flex-wrap gap-2 mb-2">
+            @foreach (var (hex, name) in palette)
+            {
+                <button type="button" class="csp-swatch" data-hex="@hex" title="@name"
+                        style="width:34px;height:34px;border-radius:50%;border:2px solid #ddd;background:@hex;cursor:pointer;position:relative"></button>
+            }
+        </div>
+        <div class="input-group input-group-sm" style="max-width:260px">
+            <span class="input-group-text">Màu khác</span>
+            <input type="color" id="csp-custom-color" class="form-control form-control-color" value="#888888" />
+            <button type="button" id="csp-add-color" class="btn btn-outline-secondary">+ Thêm</button>
+        </div>
+        <input type="hidden" name="Colors" id="csp-colors-value" value="@currentColors" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label fw-bold">Kích cỡ <span class="text-muted">(bấm chọn)</span>:</label>
+        <div id="csp-sizes" class="d-flex flex-wrap gap-2 mb-2">
+            @foreach (var sz in sizeOptions)
+            {
+                <button type="button" class="csp-chip btn btn-sm btn-outline-dark" data-size="@sz">@sz</button>
+            }
+        </div>
+        <div class="input-group input-group-sm" style="max-width:260px">
+            <input type="text" id="csp-custom-size" class="form-control" placeholder="Size khác (vd: 40, XXXL)" />
+            <button type="button" id="csp-add-size" class="btn btn-outline-secondary">+ Thêm</button>
+        </div>
+        <input type="hidden" name="Sizes" id="csp-sizes-value" value="@currentSizes" />
+    </div>
+</div>
+
+@* Script de NGAY trong partial (vanilla JS, khong can jQuery) — section khong chay trong partial *@
+<script>
+(function () {
+    // ====== MAU ======
+    var colorBox   = document.getElementById('csp-colors');
+    var colorValue = document.getElementById('csp-colors-value');
+    var selectedColors = (colorValue.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    function paintSwatch(btn) {
+        var on = selectedColors.indexOf(btn.dataset.hex.toUpperCase()) >= 0
+              || selectedColors.indexOf(btn.dataset.hex) >= 0;
+        btn.style.borderColor = on ? '#0d6efd' : '#ddd';
+        btn.style.boxShadow   = on ? '0 0 0 2px #0d6efd55' : 'none';
+        btn.innerHTML = on ? '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#0d6efd;font-weight:700">✓</span>' : '';
+    }
+    function syncColors() {
+        colorValue.value = selectedColors.join(',');
+        document.querySelectorAll('#csp-colors .csp-swatch').forEach(paintSwatch);
+    }
+    function toggleColor(hex) {
+        hex = hex.toUpperCase();
+        var i = selectedColors.findIndex(c => c.toUpperCase() === hex);
+        if (i >= 0) selectedColors.splice(i, 1); else selectedColors.push(hex);
+        syncColors();
+    }
+    colorBox.addEventListener('click', function (e) {
+        var b = e.target.closest('.csp-swatch');
+        if (b) toggleColor(b.dataset.hex);
+    });
+    // Mau tuy y chua co trong bang -> them o tron moi roi chon luon
+    document.getElementById('csp-add-color').addEventListener('click', function () {
+        var hex = document.getElementById('csp-custom-color').value.toUpperCase();
+        if (!document.querySelector('#csp-colors .csp-swatch[data-hex="' + hex + '"]')) {
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'csp-swatch'; btn.dataset.hex = hex; btn.title = hex;
+            btn.style.cssText = 'width:34px;height:34px;border-radius:50%;border:2px solid #ddd;background:' + hex + ';cursor:pointer;position:relative';
+            colorBox.appendChild(btn);
+        }
+        if (selectedColors.findIndex(c => c.toUpperCase() === hex) < 0) selectedColors.push(hex);
+        syncColors();
+    });
+    // Mau cu trong DB nhung khong nam trong bang -> ve them o tron de hien dang chon
+    selectedColors.forEach(function (hex) {
+        if (!document.querySelector('#csp-colors .csp-swatch[data-hex="' + hex + '"]')
+         && !document.querySelector('#csp-colors .csp-swatch[data-hex="' + hex.toUpperCase() + '"]')) {
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'csp-swatch'; btn.dataset.hex = hex; btn.title = hex;
+            btn.style.cssText = 'width:34px;height:34px;border-radius:50%;border:2px solid #ddd;background:' + hex + ';cursor:pointer;position:relative';
+            colorBox.appendChild(btn);
+        }
+    });
+    syncColors();
+
+    // ====== SIZE ======
+    var sizeBox   = document.getElementById('csp-sizes');
+    var sizeValue = document.getElementById('csp-sizes-value');
+    var selectedSizes = (sizeValue.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    function paintChip(btn) {
+        var on = selectedSizes.indexOf(btn.dataset.size) >= 0;
+        btn.classList.toggle('btn-dark', on);
+        btn.classList.toggle('btn-outline-dark', !on);
+    }
+    function syncSizes() {
+        sizeValue.value = selectedSizes.join(',');
+        document.querySelectorAll('#csp-sizes .csp-chip').forEach(paintChip);
+    }
+    sizeBox.addEventListener('click', function (e) {
+        var b = e.target.closest('.csp-chip');
+        if (!b) return;
+        var s = b.dataset.size;
+        var i = selectedSizes.indexOf(s);
+        if (i >= 0) selectedSizes.splice(i, 1); else selectedSizes.push(s);
+        syncSizes();
+    });
+    document.getElementById('csp-add-size').addEventListener('click', function () {
+        var s = document.getElementById('csp-custom-size').value.trim();
+        if (!s) return;
+        if (!document.querySelector('#csp-sizes .csp-chip[data-size="' + s + '"]')) {
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'csp-chip btn btn-sm btn-outline-dark'; btn.dataset.size = s; btn.textContent = s;
+            sizeBox.appendChild(btn);
+        }
+        if (selectedSizes.indexOf(s) < 0) selectedSizes.push(s);
+        document.getElementById('csp-custom-size').value = '';
+        syncSizes();
+    });
+    // Size cu trong DB nhung khong nam trong bang -> ve them chip
+    selectedSizes.forEach(function (s) {
+        if (!document.querySelector('#csp-sizes .csp-chip[data-size="' + s + '"]')) {
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.className = 'csp-chip btn btn-sm btn-outline-dark'; btn.dataset.size = s; btn.textContent = s;
+            sizeBox.appendChild(btn);
+        }
+    });
+    syncSizes();
+})();
+</script>

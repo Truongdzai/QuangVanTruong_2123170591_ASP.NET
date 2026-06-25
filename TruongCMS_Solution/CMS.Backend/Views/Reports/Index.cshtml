@@ -1,0 +1,183 @@
+@*
+    Ho ten: Quang Van Truong || MSV: 2123170591
+    Nang cap theo BAO CAO NGHIEN CUU: dashboard BI (muc 6) — Chart.js
+*@
+@using System.Text.Json
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Báo cáo & Thống kê";
+
+    var ngay  = (IEnumerable<dynamic>)ViewBag.DoanhThu30Ngay;
+    var thang = (IEnumerable<dynamic>)ViewBag.DoanhThu12Thang;
+
+    string nhanNgay   = JsonSerializer.Serialize(ngay.Select(x => (string)x.Nhan));
+    string lieuNgay   = JsonSerializer.Serialize(ngay.Select(x => (decimal)x.DoanhThu));
+    string donNgay    = JsonSerializer.Serialize(ngay.Select(x => (int)x.SoDon));
+    string nhanThang  = JsonSerializer.Serialize(thang.Select(x => (string)x.Nhan));
+    string lieuThang  = JsonSerializer.Serialize(thang.Select(x => (decimal)x.DoanhThu));
+
+    decimal? tangTruong = ViewBag.TangTruong as decimal?;
+}
+
+<h4 class="mb-3"><i class="bi bi-graph-up-arrow"></i> BÁO CÁO &amp; THỐNG KÊ (BI)</h4>
+
+@* ── The tong quan ─────────────────────────────────────────────── *@
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-success shadow-sm h-100">
+            <div class="card-body">
+                <div class="small opacity-75">Tổng doanh thu (đơn thành công)</div>
+                <div class="fs-4 fw-bold">@(((decimal)ViewBag.TongDoanhThu).ToString("N0")) đ</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-primary shadow-sm h-100">
+            <div class="card-body">
+                <div class="small opacity-75">Doanh thu tháng này</div>
+                <div class="fs-4 fw-bold">@(((decimal)ViewBag.DoanhThuThang).ToString("N0")) đ</div>
+                @if (tangTruong != null)
+                {
+                    <span class="badge @(tangTruong >= 0 ? "bg-light text-success" : "bg-light text-danger")">
+                        <i class="bi @(tangTruong >= 0 ? "bi-arrow-up-right" : "bi-arrow-down-right")"></i>
+                        @Math.Abs(tangTruong.Value)% so với tháng trước
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-info shadow-sm h-100">
+            <div class="card-body">
+                <div class="small opacity-75">Khách quay lại mua lần 2 (Retention)</div>
+                <div class="fs-4 fw-bold">@ViewBag.Retention%</div>
+                <span class="small">@ViewBag.KhachQuayLai / @ViewBag.KhachDaMua khách đã mua</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-warning shadow-sm h-100">
+            <div class="card-body">
+                <div class="small opacity-75">Cảnh báo tồn kho</div>
+                <div class="fs-5 fw-bold">@ViewBag.SapHetHang SP sắp hết (≤5)</div>
+                <span class="small">@ViewBag.HetHang SP đã hết hàng — @ViewBag.DonChoXuLy đơn chờ xử lý</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ── Bieu do ───────────────────────────────────────────────────── *@
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-header"><i class="bi bi-graph-up"></i> Doanh thu 30 ngày gần nhất</div>
+            <div class="card-body"><canvas id="bieuDoNgay" height="120"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-header"><i class="bi bi-bar-chart"></i> Doanh thu 12 tháng</div>
+            <div class="card-body"><canvas id="bieuDoThang" height="150"></canvas></div>
+        </div>
+    </div>
+</div>
+
+@* ── Top ban chay & ton kho lau ────────────────────────────────── *@
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white"><i class="bi bi-trophy"></i> Top 5 bán chạy nhất</div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr><th>Sản phẩm</th><th class="text-center" style="width:90px">Đã bán</th><th class="text-end" style="width:130px">Doanh thu</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sp in (IEnumerable<dynamic>)ViewBag.TopBanChay)
+                        {
+                            <tr>
+                                <td class="fw-bold">@sp.Ten</td>
+                                <td class="text-center"><span class="badge bg-success">@sp.DaBan</span></td>
+                                <td class="text-end">@(((decimal)sp.DoanhThu).ToString("N0")) đ</td>
+                            </tr>
+                        }
+                        @if (!((IEnumerable<dynamic>)ViewBag.TopBanChay).Any())
+                        {
+                            <tr><td colspan="3" class="text-muted text-center py-3">Chưa có đơn thành công nào</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-danger text-white"><i class="bi bi-hourglass-split"></i> Tồn kho lâu nhất (chưa bán được)</div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr><th>Sản phẩm</th><th class="text-center" style="width:90px">Tồn kho</th><th class="text-end" style="width:130px">Giá bán</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sp in (IEnumerable<dynamic>)ViewBag.TonKhoLau)
+                        {
+                            <tr>
+                                <td class="fw-bold">@sp.Name</td>
+                                <td class="text-center"><span class="badge bg-danger">@sp.StockQuantity</span></td>
+                                <td class="text-end">@(((decimal)sp.Price).ToString("N0")) đ</td>
+                            </tr>
+                        }
+                        @if (!((IEnumerable<dynamic>)ViewBag.TonKhoLau).Any())
+                        {
+                            <tr><td colspan="3" class="text-muted text-center py-3">Mọi sản phẩm đều đã có lượt bán 🎉</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+        // Bieu do duong: doanh thu + so don 30 ngay
+        new Chart(document.getElementById('bieuDoNgay'), {
+            data: {
+                labels: @Html.Raw(nhanNgay),
+                datasets: [
+                    {
+                        type: 'line', label: 'Doanh thu', data: @Html.Raw(lieuNgay),
+                        borderColor: '#198754', backgroundColor: 'rgba(25,135,84,.12)',
+                        fill: true, tension: .35, yAxisID: 'y'
+                    },
+                    {
+                        type: 'bar', label: 'Số đơn', data: @Html.Raw(donNgay),
+                        backgroundColor: 'rgba(13,110,253,.35)', yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y:  { position: 'left',  ticks: { callback: v => v.toLocaleString('vi') } },
+                    y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+
+        // Bieu do cot: doanh thu 12 thang
+        new Chart(document.getElementById('bieuDoThang'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(nhanThang),
+                datasets: [{
+                    label: 'Doanh thu', data: @Html.Raw(lieuThang),
+                    backgroundColor: '#0d6efd'
+                }]
+            },
+            options: { scales: { y: { ticks: { callback: v => v.toLocaleString('vi') } } } }
+        });
+    </script>
+}

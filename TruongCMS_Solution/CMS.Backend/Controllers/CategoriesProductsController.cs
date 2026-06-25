@@ -45,7 +45,8 @@ namespace CMS.Backend.Controllers
                         // Buoc B: Ky thuat got tia (Projection) - chi lay cac truong can thiet ra FrontEnd
                         c.Id,
                         c.Name,
-                        c.Description
+                        c.Description,
+                        c.ImageUrl // Buoi 9 (Tieu chi 38): anh dai dien khoi CategoryMenu
                     })
                     .ToListAsync(); // Chuyen doi bat dong bo sang dang danh sach mang
 

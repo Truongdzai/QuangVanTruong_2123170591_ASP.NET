@@ -2,7 +2,7 @@
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
     Bai thuc hanh: 4
-    Ngay thuc hien: 23/03/2026
+    Ngay thuc hien: 23/05/2026
     Version: 1.4
 *@
 @model CMS.Data.Entities.Post
@@ -15,6 +15,8 @@
     </div>
     <div class="card-body">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            @* Tom tat loi server tra ve (vd thieu tieu de/noi dung) — tranh trang 500 *@
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
 
             @* Hidden: giu Id de controller biet dang sua dong nao *@
             <input type="hidden" asp-for="Id" />
@@ -27,10 +29,14 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tieu de bai viet:</label>
                         <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Noi dung chi tiet:</label>
-                        <textarea asp-for="Content" class="form-control" rows="10"></textarea>
+                        @* Tieu chi 15 + 35: CKEditor 5 thay the textarea, ho tro dinh dang
+                           va chen anh truc tiep vao noi dung (luu duoi dang ma HTML) *@
+                        <textarea asp-for="Content" id="editorContent" class="form-control" rows="10"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -40,6 +46,7 @@
                         <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
                             <option value="">-- Chon danh muc --</option>
                         </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
@@ -81,6 +88,11 @@
 </div>
 
 @section Scripts {
+@* Kiem tra hop le phia client (jQuery unobtrusive) cho Title/Chuyen muc *@
+<partial name="_ValidationScriptsPartial" />
+@* Tieu chi 15: nap CKEditor 5 (ban classic) tu CDN *@
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/translations/vi.js"></script>
 <script>
     function xemTruocAnh(input) {
         if (input.files && input.files[0]) {
@@ -91,5 +103,21 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    // Tieu chi 15 + 35: khoi tao CKEditor tren o noi dung, upload anh ve /Post/UploadImage
+    ClassicEditor
+        .create(document.querySelector('#editorContent'), {
+            language: 'vi',
+            ckfinder: { uploadUrl: '/Post/UploadImage' },
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'link', '|',
+                'bulletedList', 'numberedList', 'blockQuote', '|',
+                'imageUpload', 'insertTable', 'mediaEmbed', '|',
+                'undo', 'redo'
+            ]
+        })
+        .then(editor => { window._editor = editor; })
+        .catch(err => console.error('Loi khoi tao CKEditor:', err));
 </script>
 }

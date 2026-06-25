@@ -40,6 +40,8 @@
                                    class="form-control" placeholder="Vi du: 50" />
                         </div>
                     </div>
+                    @* Bo chon mau (swatch) + chon size (chip) — than thien, khong phai go tay *@
+                    <partial name="_ColorSizePicker" view-data='new ViewDataDictionary(ViewData) { ["CurrentColors"] = Model.Colors, ["CurrentSizes"] = Model.Sizes }' />
                 </div>
 
                 @* Cot phai: danh muc + anh *@
@@ -52,13 +54,23 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Anh san pham:</label>
-                        <input type="file" name="uploadImage" id="uploadImage"
-                               class="form-control" accept="image/*"
+                        <label class="form-label fw-bold">Anh san pham — Cach 1: UPLOAD file (1 hoac nhieu):</label>
+                        <input type="file" name="uploadImages" id="uploadImages"
+                               class="form-control" accept="image/*" multiple
                                onchange="xemTruocAnh(this)" />
+                        <div class="form-text">
+                            Anh dau tien la anh dai dien, cac anh sau vao bo suu tap (gallery).
+                        </div>
                         <img id="anhXemTruoc" src="/images/no-image.svg"
                              class="mt-2 rounded border"
                              style="height:150px;object-fit:cover;width:100%" />
+                        <div id="anhThumbs" class="d-flex gap-2 flex-wrap mt-2"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Cach 2: DAN URL anh (moi dong 1 link):</label>
+                        <textarea name="imageUrlsText" class="form-control" rows="3"
+                                  placeholder="https://.../anh1.jpg&#10;https://.../anh2.jpg"></textarea>
+                        <div class="form-text">Co the dung CA upload + URL. Upload duoc uu tien xep truoc.</div>
                     </div>
                     <hr />
                     <div class="d-grid gap-2">
@@ -77,14 +89,29 @@
 
 @section Scripts {
 <script>
+    // Xem truoc: anh DAU TIEN hien to (anh dai dien),
+    // cac anh con lai hien thumbnail nho ben duoi (bo suu tap)
     function xemTruocAnh(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('anhXemTruoc').src = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0]);
+        var anhTo = document.getElementById('anhXemTruoc');
+        var khungNho = document.getElementById('anhThumbs');
+        khungNho.innerHTML = '';
+
+        if (!input.files || input.files.length === 0) {
+            anhTo.src = '/images/no-image.svg';
+            return;
         }
+
+        Array.from(input.files).forEach(function (file, i) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                if (i === 0) { anhTo.src = e.target.result; return; }
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.cssText = 'width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #dee2e6';
+                khungNho.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
     }
 </script>
 }

@@ -16,6 +16,27 @@
     </a>
 </div>
 
+@* Thanh TIM KIEM + LOC DANH MUC (GET, giu lai gia tri da nhap) *@
+<form method="get" asp-action="Index" class="card shadow-sm mb-3">
+    <div class="card-body row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label small mb-1">Tìm theo tên / mô tả</label>
+            <input type="text" name="search" value="@(ViewBag.Search as string)"
+                   class="form-control" placeholder="Nhập từ khóa..." />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Lọc theo danh mục</label>
+            <select name="categoryId" class="form-select" asp-items="ViewBag.CategoryProductList">
+                <option value="">-- Tất cả danh mục --</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-search"></i> Tìm</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Xóa lọc</a>
+        </div>
+    </div>
+</form>
+
 <div class="card shadow-sm">
     <div class="card-body p-0">
         <table class="table table-hover table-bordered mb-0 align-middle">
@@ -62,6 +83,10 @@
                             }
                         </td>
                         <td class="text-center">
+                            <a asp-controller="Variant" asp-action="Manage" asp-route-id="@item.Id"
+                               class="btn btn-sm btn-info me-1" title="Bien the SKU (Mau × Size)">
+                                <i class="bi bi-boxes"></i> SKU
+                            </a>
                             <a asp-action="Edit" asp-route-id="@item.Id"
                                class="btn btn-sm btn-warning me-1">
                                 <i class="bi bi-pencil"></i> Sua
@@ -78,6 +103,37 @@
         </table>
     </div>
     <div class="card-footer text-muted small">
-        Tong cong: @Model.Count() san pham
+        Tong cong: @(ViewBag.TotalItems ?? Model.Count()) san pham (trang @ViewBag.Page / @ViewBag.TotalPages)
     </div>
 </div>
+
+@* Thanh PHAN TRANG — giu lai tu khoa tim kiem + danh muc dang loc *@
+@if ((int)(ViewBag.TotalPages ?? 1) > 1)
+{
+    int trangHienTai = (int)ViewBag.Page;
+    int tongTrang = (int)ViewBag.TotalPages;
+    string? kw = ViewBag.Search as string;
+    int? catId = ViewBag.CategoryId as int?;
+
+    <nav aria-label="Phan trang san pham" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(trangHienTai == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(trangHienTai - 1)"
+                   asp-route-search="@kw" asp-route-categoryId="@catId">&laquo; Truoc</a>
+            </li>
+
+            @for (int i = 1; i <= tongTrang; i++)
+            {
+                <li class="page-item @(i == trangHienTai ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i"
+                       asp-route-search="@kw" asp-route-categoryId="@catId">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(trangHienTai == tongTrang ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(trangHienTai + 1)"
+                   asp-route-search="@kw" asp-route-categoryId="@catId">Sau &raquo;</a>
+            </li>
+        </ul>
+    </nav>
+}

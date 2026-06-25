@@ -1,0 +1,23 @@
+@*
+    Thanh TIM KIEM dung chung cho cac trang quan ly (GET, giu lai tu khoa).
+    Goi: <partial name="_AdminSearch" view-data='new ViewDataDictionary(ViewData){ ["SearchPlaceholder"]="Tim theo ten..." }' />
+*@
+@{
+    string action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    string? search = ViewBag.Search as string;
+    string placeholder = (ViewData["SearchPlaceholder"] as string) ?? "Tìm kiếm...";
+}
+<form method="get" asp-action="@action" class="card shadow-sm mb-3">
+    <div class="card-body row g-2 align-items-center">
+        <div class="col-md-9">
+            <input type="text" name="search" value="@search" class="form-control" placeholder="@placeholder" />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-fill"><i class="bi bi-search"></i> Tìm</button>
+            @if (!string.IsNullOrEmpty(search))
+            {
+                <a asp-action="@action" class="btn btn-outline-secondary">Xóa</a>
+            }
+        </div>
+    </div>
+</form>

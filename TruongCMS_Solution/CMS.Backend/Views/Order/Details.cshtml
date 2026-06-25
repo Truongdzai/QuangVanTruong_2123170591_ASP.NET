@@ -1,32 +1,112 @@
 @*
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
-    Bai thuc hanh: 6
-    Ngay thuc hien: 27/05/2026
-    Version: 1.6
+    Nang cap theo BAO CAO NGHIEN CUU: may trang thai don hang (test case 12)
+    — chi hien nut chuyen sang cac trang thai DUOC PHEP, khong co duong lui
 *@
 @model CMS.Data.Entities.Order
+@using CMS.Data.Entities
 
-@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Chi tiet Don hang"; }
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiet Don hang";
+    var buocTiep = (int[])(ViewBag.BuocTiepTheo ?? Array.Empty<int>());
+
+    string BadgeClass(int st) => st switch
+    {
+        OrderStatusFlow.ChoXacNhan => "bg-warning text-dark",
+        OrderStatusFlow.DaGomHang  => "bg-primary",
+        OrderStatusFlow.DangGiao   => "bg-info text-dark",
+        OrderStatusFlow.ThanhCong  => "bg-success",
+        OrderStatusFlow.DaHuy      => "bg-secondary",
+        OrderStatusFlow.HoanTra    => "bg-danger",
+        _ => "bg-light text-dark"
+    };
+
+    string NutClass(int st) => st switch
+    {
+        OrderStatusFlow.DaGomHang => "btn-primary",
+        OrderStatusFlow.DangGiao  => "btn-info",
+        OrderStatusFlow.ThanhCong => "btn-success",
+        OrderStatusFlow.DaHuy     => "btn-outline-secondary",
+        OrderStatusFlow.HoanTra   => "btn-outline-danger",
+        _ => "btn-light"
+    };
+}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">
         <i class="bi bi-receipt"></i> DON HANG #@Model.Id
-        @switch (Model.Status)
+        <span class="badge @BadgeClass(Model.Status) ms-2">@OrderStatusFlow.TenTrangThai(Model.Status)</span>
+        @if (Model.PaymentStatus == 1)
         {
-            case 0: <span class="badge bg-warning text-dark ms-2">Cho duyet</span> break;
-            case 1: <span class="badge bg-info text-dark ms-2">Dang giao</span> break;
-            case 2: <span class="badge bg-success ms-2">Hoan thanh</span> break;
+            <span class="badge bg-success ms-1"><i class="bi bi-check-circle"></i> Đã thanh toán</span>
+        }
+        else if (Model.PaymentStatus == 2)
+        {
+            <span class="badge bg-danger ms-1"><i class="bi bi-arrow-counterclockwise"></i> Đã hoàn tiền</span>
+        }
+        else
+        {
+            <span class="badge bg-light text-dark border ms-1">Chưa thanh toán (@Model.PaymentMethod)</span>
         }
     </h4>
-    <a asp-action="Index" class="btn btn-secondary">
-        <i class="bi bi-arrow-left"></i> Quay lai
-    </a>
+    <div>
+        <a asp-action="Invoice" asp-route-id="@Model.Id" target="_blank" class="btn btn-outline-dark">
+            <i class="bi bi-printer"></i> Hóa đơn
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lai
+        </a>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger"><i class="bi bi-x-octagon"></i> @TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+}
+
+@* Thanh tien trinh quy trinh: Cho xac nhan -> Da gom hang -> Dang giao -> Thanh cong *@
+<div class="card shadow-sm mb-4">
+    <div class="card-body py-3">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            @foreach (var (st, idx) in new[] { OrderStatusFlow.ChoXacNhan, OrderStatusFlow.DaGomHang, OrderStatusFlow.DangGiao, OrderStatusFlow.ThanhCong }.Select((s, i) => (s, i)))
+            {
+                bool daQua = Model.Status >= st && Model.Status <= OrderStatusFlow.ThanhCong;
+                bool hienTai = Model.Status == st;
+                <div class="text-center flex-fill">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center
+                                @(daQua ? "bg-success text-white" : "bg-light text-muted border")"
+                         style="width:38px;height:38px">
+                        @if (daQua && !hienTai) { <i class="bi bi-check-lg"></i> } else { @(idx + 1) }
+                    </div>
+                    <div class="small mt-1 @(hienTai ? "fw-bold" : "text-muted")">@OrderStatusFlow.TenTrangThai(st)</div>
+                </div>
+                @if (st != OrderStatusFlow.ThanhCong)
+                {
+                    <div class="flex-fill border-top" style="min-width:30px"></div>
+                }
+            }
+        </div>
+        @if (Model.Status == OrderStatusFlow.DaHuy || Model.Status == OrderStatusFlow.HoanTra)
+        {
+            <div class="alert alert-secondary mt-3 mb-0 py-2">
+                <i class="bi bi-info-circle"></i>
+                Đơn kết thúc ở trạng thái <b>@OrderStatusFlow.TenTrangThai(Model.Status)</b>
+                @if (!string.IsNullOrEmpty(Model.CancelReason)) { <span>— lý do: @Model.CancelReason</span> }
+                — tồn kho đã được hoàn lại@(Model.PaymentStatus == 2 ? ", tiền đã hoàn cho khách" : "").
+            </div>
+        }
+    </div>
 </div>
 
 <div class="row g-4">
 
-    @* Thong tin don hang + cap nhat trang thai *@
+    @* Thong tin don hang + chuyen trang thai *@
     <div class="col-md-4">
         <div class="card shadow-sm mb-3">
             <div class="card-header bg-primary text-white">
@@ -40,8 +120,29 @@
                     <dt class="col-5 text-muted">Dien thoai:</dt>
                     <dd class="col-7">@Model.Customer?.Phone</dd>
 
+                    <dt class="col-5 text-muted">Dia chi:</dt>
+                    <dd class="col-7 small">@Model.Customer?.Address</dd>
+
                     <dt class="col-5 text-muted">Ngay dat:</dt>
                     <dd class="col-7">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-5 text-muted">Thanh toan:</dt>
+                    <dd class="col-7">@Model.PaymentMethod @(Model.PaidDate != null ? $"({Model.PaidDate:dd/MM HH:mm})" : "")</dd>
+
+                    <dt class="col-5 text-muted">Van don:</dt>
+                    <dd class="col-7">
+                        @if (string.IsNullOrEmpty(Model.TrackingCode))
+                        {
+                            <span class="text-muted">Chua day don</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-dark">@Model.ShippingProvider</span> <code>@Model.TrackingCode</code>
+                        }
+                    </dd>
+
+                    <dt class="col-5 text-muted">Diem tang khach:</dt>
+                    <dd class="col-7">@(Model.LoyaltyPointsEarned > 0 ? $"+{Model.LoyaltyPointsEarned} điểm" : "—")</dd>
 
                     <dt class="col-5 text-muted">Ghi chu:</dt>
                     <dd class="col-7 small">@(Model.Notes ?? "Khong co")</dd>
@@ -49,25 +150,55 @@
             </div>
         </div>
 
-        @* Form cap nhat trang thai *@
+        @* MAY TRANG THAI: chi hien cac buoc DUOC PHEP (test case 12) *@
         <div class="card shadow-sm">
             <div class="card-header bg-warning">
-                <i class="bi bi-arrow-repeat"></i> Cap nhat trang thai
+                <i class="bi bi-arrow-repeat"></i> Chuyen trang thai
             </div>
             <div class="card-body">
-                <form asp-action="UpdateStatus" method="post">
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <div class="mb-3">
-                        <select name="status" class="form-select">
-                            <option value="0" selected="@(Model.Status == 0 ? "selected" : null)">Cho duyet</option>
-                            <option value="1" selected="@(Model.Status == 1 ? "selected" : null)">Dang giao</option>
-                            <option value="2" selected="@(Model.Status == 2 ? "selected" : null)">Hoan thanh</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-warning w-100">
-                        <i class="bi bi-save"></i> Luu trang thai
-                    </button>
-                </form>
+                @if (buocTiep.Length == 0)
+                {
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-lock"></i>
+                        Đơn đã ở trạng thái cuối — không thể thay đổi nữa.
+                    </p>
+                }
+                else
+                {
+                    <p class="small text-muted">
+                        Quy trình một chiều: <b>không thể quay lùi</b> trạng thái.
+                        Hủy/hoàn trả sẽ tự động hoàn kho.
+                    </p>
+                    @foreach (var st in buocTiep)
+                    {
+                        <form asp-action="UpdateStatus" method="post" class="mb-2"
+                              onsubmit="return confirm('Chuyển đơn #@Model.Id sang \'@OrderStatusFlow.TenTrangThai(st)\'?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@st" />
+                            @if (st == OrderStatusFlow.DaHuy || st == OrderStatusFlow.HoanTra)
+                            {
+                                <input type="text" name="reason" class="form-control form-control-sm mb-1"
+                                       placeholder="Lý do @(st == OrderStatusFlow.DaHuy ? "hủy" : "hoàn trả")..." />
+                            }
+                            <button type="submit" class="btn @NutClass(st) w-100">
+                                @switch (st)
+                                {
+                                    case OrderStatusFlow.DaGomHang: <i class="bi bi-box-seam"></i> break;
+                                    case OrderStatusFlow.DangGiao:  <i class="bi bi-truck"></i> break;
+                                    case OrderStatusFlow.ThanhCong: <i class="bi bi-check-circle"></i> break;
+                                    case OrderStatusFlow.DaHuy:     <i class="bi bi-x-circle"></i> break;
+                                    case OrderStatusFlow.HoanTra:   <i class="bi bi-arrow-counterclockwise"></i> break;
+                                }
+                                @OrderStatusFlow.TenTrangThai(st)
+                                @if (st == OrderStatusFlow.DangGiao && string.IsNullOrEmpty(Model.TrackingCode))
+                                {
+                                    <small>(tự đẩy đơn GHTK)</small>
+                                }
+                            </button>
+                        </form>
+                    }
+                }
             </div>
         </div>
     </div>
@@ -85,6 +216,8 @@
                 }
                 else
                 {
+                    var tamTinh = Model.OrderDetails.Sum(od => od.UnitPrice * od.Quantity);
+                    var tienGiam = Math.Round(tamTinh * Model.DiscountPercent / 100m);
                     <table class="table table-hover mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
@@ -104,7 +237,13 @@
                                              style="width:45px;height:45px;object-fit:cover;border-radius:4px"
                                              onerror="this.src='/images/no-image.svg'" />
                                     </td>
-                                    <td class="fw-bold">@od.Product?.Name</td>
+                                    <td>
+                                        <span class="fw-bold">@od.Product?.Name</span>
+                                        @if (!string.IsNullOrEmpty(od.VariantLabel))
+                                        {
+                                            <br /><span class="badge bg-light text-dark border">@od.VariantLabel</span>
+                                        }
+                                    </td>
                                     <td class="text-center">@od.Quantity</td>
                                     <td class="text-end">@od.UnitPrice.ToString("N0") đ</td>
                                     <td class="text-end text-success fw-bold">
@@ -115,9 +254,26 @@
                         </tbody>
                         <tfoot class="table-light">
                             <tr>
+                                <td colspan="4" class="text-end">Tam tinh:</td>
+                                <td class="text-end">@tamTinh.ToString("N0") đ</td>
+                            </tr>
+                            @if (Model.DiscountPercent > 0)
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-end">
+                                        Giam gia (@Model.DiscountCode -@Model.DiscountPercent%):
+                                    </td>
+                                    <td class="text-end text-danger">-@tienGiam.ToString("N0") đ</td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="4" class="text-end">Phi van chuyen:</td>
+                                <td class="text-end">@Model.ShippingFee.ToString("N0") đ</td>
+                            </tr>
+                            <tr>
                                 <td colspan="4" class="text-end fw-bold">Tong cong:</td>
                                 <td class="text-end text-danger fw-bold fs-6">
-                                    @Model.OrderDetails.Sum(od => od.UnitPrice * od.Quantity).ToString("N0") đ
+                                    @Model.TotalAmount.ToString("N0") đ
                                 </td>
                             </tr>
                         </tfoot>

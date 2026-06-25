@@ -1,26 +1,43 @@
 @*
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
-    Bai thuc hanh: 6
-    Ngay thuc hien: 27/05/2026
-    Version: 1.6
+    Nang cap theo BAO CAO NGHIEN CUU: 6 trang thai theo quy trinh chuan
+    (Cho xac nhan -> Da gom hang -> Dang giao -> Thanh cong / Da huy / Hoan tra)
 *@
 @model IEnumerable<CMS.Data.Entities.Order>
+@using CMS.Data.Entities
 
-@{ Layout = "_LayoutAdmin"; ViewData["Title"] = "Quan ly Don hang"; }
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quan ly Don hang";
+    int? locTrangThai = ViewBag.LocTrangThai as int?;
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+    string BadgeClass(int st) => st switch
+    {
+        OrderStatusFlow.ChoXacNhan => "bg-warning text-dark",
+        OrderStatusFlow.DaGomHang  => "bg-primary",
+        OrderStatusFlow.DangGiao   => "bg-info text-dark",
+        OrderStatusFlow.ThanhCong  => "bg-success",
+        OrderStatusFlow.DaHuy      => "bg-secondary",
+        OrderStatusFlow.HoanTra    => "bg-danger",
+        _ => "bg-light text-dark"
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <h4 class="mb-0"><i class="bi bi-bag-check"></i> QUAN LY DON HANG</h4>
-    <div>
-        <span class="badge bg-warning text-dark me-1">
-            Cho duyet: @Model.Count(o => o.Status == 0)
-        </span>
-        <span class="badge bg-info text-dark me-1">
-            Dang giao: @Model.Count(o => o.Status == 1)
-        </span>
-        <span class="badge bg-success">
-            Hoan thanh: @Model.Count(o => o.Status == 2)
-        </span>
+    <div class="btn-group btn-group-sm" role="group">
+        <a asp-action="Index" class="btn @(locTrangThai == null ? "btn-dark" : "btn-outline-dark")">
+            Tất cả
+        </a>
+        @foreach (var st in new[] { OrderStatusFlow.ChoXacNhan, OrderStatusFlow.DaGomHang, OrderStatusFlow.DangGiao, OrderStatusFlow.ThanhCong, OrderStatusFlow.DaHuy, OrderStatusFlow.HoanTra })
+        {
+            <a asp-action="Index" asp-route-status="@st"
+               class="btn @(locTrangThai == st ? "btn-dark" : "btn-outline-dark")">
+                @OrderStatusFlow.TenTrangThai(st)
+                <span class="badge @BadgeClass(st) ms-1">@Model.Count(o => o.Status == st)</span>
+            </a>
+        }
     </div>
 </div>
 
@@ -31,11 +48,12 @@
                 <tr>
                     <th style="width:70px">Ma don</th>
                     <th>Khach hang</th>
-                    <th style="width:150px">Ngay dat hang</th>
-                    <th style="width:90px" class="text-center">So SP</th>
-                    <th>Ghi chu</th>
+                    <th style="width:140px">Ngay dat hang</th>
+                    <th style="width:70px" class="text-center">So SP</th>
+                    <th style="width:120px" class="text-end">Tong tien</th>
+                    <th style="width:130px" class="text-center">Thanh toan</th>
                     <th style="width:120px" class="text-center">Trang thai</th>
-                    <th style="width:120px" class="text-center">Thao tac</th>
+                    <th style="width:100px" class="text-center">Thao tac</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,15 +76,20 @@
                         <td class="text-center">
                             <span class="badge bg-secondary">@order.OrderDetails.Count</span>
                         </td>
-                        <td class="text-muted small">@order.Notes</td>
+                        <td class="text-end fw-bold">@order.TotalAmount.ToString("N0") đ</td>
                         <td class="text-center">
-                            @switch (order.Status)
+                            <span class="badge bg-light text-dark border">@order.PaymentMethod</span>
+                            @if (order.PaymentStatus == 1)
                             {
-                                case 0: <span class="badge bg-warning text-dark">Cho duyet</span> break;
-                                case 1: <span class="badge bg-info text-dark">Dang giao</span> break;
-                                case 2: <span class="badge bg-success">Hoan thanh</span> break;
-                                default: <span class="badge bg-secondary">?</span> break;
+                                <i class="bi bi-check-circle-fill text-success" title="Da thanh toan"></i>
                             }
+                            else if (order.PaymentStatus == 2)
+                            {
+                                <i class="bi bi-arrow-counterclockwise text-danger" title="Da hoan tien"></i>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @BadgeClass(order.Status)">@OrderStatusFlow.TenTrangThai(order.Status)</span>
                         </td>
                         <td class="text-center">
                             <a asp-action="Details" asp-route-id="@order.Id"
@@ -88,6 +111,7 @@
         </table>
     </div>
     <div class="card-footer text-muted small">
-        Tong cong: @Model.Count() don hang
+        Tong cong: @Model.Count() don hang — Doanh thu don thanh cong:
+        <b>@Model.Where(o => o.Status == OrderStatusFlow.ThanhCong).Sum(o => o.TotalAmount).ToString("N0") đ</b>
     </div>
 </div>

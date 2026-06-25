@@ -1,0 +1,49 @@
+Using launch settings from D:\asp.NET\TruongCMS_Solution\CMS.Backend\Properties\launchSettings.json...
+[11:15:01 INF] Now listening on: http://localhost:5232
+[11:15:01 INF] Application started. Press Ctrl+C to shut down.
+[11:15:01 INF] Hosting environment: Development
+[11:15:01 INF] Content root path: D:\asp.NET\TruongCMS_Solution\CMS.Backend
+[11:15:15 INF] HTTP GET /api/products/newest responded 200 in 235.0488 ms
+[11:15:30 INF] HTTP GET /api/products/1 responded 200 in 154.4302 ms
+[11:15:30 INF] HTTP GET /api/flashsales/active responded 200 in 56.6635 ms
+[11:15:30 INF] HTTP GET /api/brands responded 200 in 27.2545 ms
+[11:15:46 INF] HTTP GET /api/products/1 responded 200 in 4.4116 ms
+[11:15:46 INF] HTTP POST /api/discounts/validate responded 200 in 49.9657 ms
+[11:15:46 INF] HTTP POST /api/discounts/validate responded 200 in 10.8375 ms
+[11:16:18 INF] HTTP GET /api/products/1 responded 200 in 3.0561 ms
+[11:16:18 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:16:18 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:16:18 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:16:18 INF] HTTP POST /api/orders responded 201 in 219.3448 ms
+[11:16:18 INF] HTTP GET /api/products/1 responded 200 in 2.4819 ms
+[11:16:18 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:16:18 INF] HTTP POST /api/orders responded 409 in 26.3122 ms
+[11:16:18 INF] [EMAIL DEMO - SMTP chua cau hinh] To: buyer1@test.com | Subject: SHOP.CO - Xác nhận đơn hàng #5
+<h2>Cảm ơn Nguyen Van Test đã đặt hàng tại SHOP.CO!</h2><p>Mã đơn hàng: <b>#5</b> — Ngày đặt: 13/06/2026 11:16</p><table style='border-collapse:collapse'><tr><th style='padding:6px 12px;border:1px solid #ddd'>Sản phẩm</th><th style='padding:6px 12px;border:1px solid #ddd'>SL</th><th style='padding:6px 12px;border:1px solid #ddd'>Đơn giá</th></tr><tr><td style='padding:6px 12px;border:1px solid #ddd'>T-SHIRT WITH TAPE DETAILS (Đỏ / Medium)</td><td style='padding:6px 12px;border:1px solid #ddd;text-align:center'>2</td><td style='padding:6px 12px;border:1px solid #ddd;text-align:right'>84 ₫</td></tr></table><p>Tạm tính: 168 ₫</p><p>Phí vận chuyển: 22 ₫</p><p><b>Thành tiền: 190 ₫</b></p><p>Hình thức: Thanh toán khi nhận hàng (COD)</p><p>Giao tới: 123 Test Street — SĐT: 0912345678</p><p>Chúng tôi sẽ liên hệ xác nhận trong thời gian sớm nhất.</p>
+[11:16:37 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:16:37 INF] HTTP POST /api/orders responded 409 in 22.8300 ms
+[11:16:37 INF] HTTP GET /api/orders/lookup responded 200 in 30.3462 ms
+[11:16:56 INF] [EMAIL DEMO - SMTP chua cau hinh] To: loyalty@test.com | Subject: SHOP.CO - Chào mừng bạn! Tặng mã giảm giá 10%
+<h2>Xin chào Loyalty Tester,</h2><p>Cảm ơn bạn đã đăng ký thành viên SHOP.CO!</p><p>Tặng bạn mã giảm giá <b style='font-size:22px'>WELCOME-1433</b> — giảm <b>10%</b> cho đơn hàng bất kỳ.</p><p>Mã có hiệu lực 30 ngày, dùng 1 lần. Nhập mã ở trang Giỏ hàng khi thanh toán nhé!</p>
+[11:17:01 INF] HTTP POST /api/customers/register responded 201 in 5012.3438 ms
+[11:17:03 INF] HTTP GET /api/customers/me responded 200 in 2260.6265 ms
+[11:17:03 INF] HTTP GET /api/customers/me responded 401 in 4.5942 ms
+[11:17:03 INF] HTTP POST /api/customers/refresh-token responded 200 in 28.2943 ms
+[11:17:37 INF] HTTP GET /api/products/1 responded 200 in 3.0582 ms
+[11:17:37 INF] HTTP GET /api/products/1 responded 200 in 2.6354 ms
+[11:17:37 INF] Don hang #5 chuyen sang trang thai 4 (Đã hủy)
+[11:17:37 INF] HTTP POST /api/orders/5/cancel responded 200 in 43.9973 ms
+[11:17:37 INF] HTTP GET /api/products/1 responded 200 in 2.5086 ms
+[11:17:37 INF] HTTP GET /api/orders/lookup responded 200 in 1.4612 ms
+[11:17:57 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:17:57 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:17:57 WRN] Savepoints are disabled because Multiple Active Result Sets (MARS) is enabled. If 'SaveChanges' fails, then the transaction cannot be automatically rolled back to a known clean state. Instead, the transaction should be rolled back by the application before retrying 'SaveChanges'. See https://go.microsoft.com/fwlink/?linkid=2149338 for more information and examples. To identify the code which triggers this warning, call 'ConfigureWarnings(w => w.Throw(SqlServerEventId.SavepointsDisabledBecauseOfMARS))'.
+[11:17:57 INF] HTTP POST /api/orders responded 201 in 12.2027 ms
+[11:17:58 INF] [EMAIL DEMO - SMTP chua cau hinh] To: vnpay@test.com | Subject: SHOP.CO - Xác nhận đơn hàng #6
+<h2>Cảm ơn VNPay Buyer đã đặt hàng tại SHOP.CO!</h2><p>Mã đơn hàng: <b>#6</b> — Ngày đặt: 13/06/2026 11:17</p><table style='border-collapse:collapse'><tr><th style='padding:6px 12px;border:1px solid #ddd'>Sản phẩm</th><th style='padding:6px 12px;border:1px solid #ddd'>SL</th><th style='padding:6px 12px;border:1px solid #ddd'>Đơn giá</th></tr><tr><td style='padding:6px 12px;border:1px solid #ddd'>SKINNY FIT JEANS</td><td style='padding:6px 12px;border:1px solid #ddd;text-align:center'>1</td><td style='padding:6px 12px;border:1px solid #ddd;text-align:right'>91 ₫</td></tr></table><p>Tạm tính: 91 ₫</p><p>Phí vận chuyển: 20 ₫</p><p><b>Thành tiền: 111 ₫</b></p><p>Thanh toán online: <b style='color:#c60'>Chờ thanh toán</b></p><p>Giao tới: VNPay St — SĐT: 0988777666</p><p>Chúng tôi sẽ liên hệ xác nhận trong thời gian sớm nhất.</p>
+[11:17:58 INF] HTTP POST /api/payments/create responded 200 in 32.4679 ms
+[11:17:58 INF] [PAYMENT] Don #6 DA THANH TOAN (6-20260613111758017)
+[11:17:58 INF] HTTP GET /api/payments/demo-complete responded 200 in 29.9365 ms
+[11:17:58 INF] [EMAIL DEMO - SMTP chua cau hinh] To: vnpay@test.com | Subject: SHOP.CO - Đơn hàng #6 đã thanh toán thành công
+<h2>Xin chào VNPay Buyer,</h2><p>Chúng tôi đã nhận được <b>111 ₫</b> cho đơn hàng <b>#6</b> qua VNPAY.</p><p>Đơn hàng sẽ được đóng gói và bàn giao cho đơn vị vận chuyển sớm nhất.</p>
+[11:17:58 INF] HTTP GET /api/orders/lookup responded 200 in 1.7039 ms

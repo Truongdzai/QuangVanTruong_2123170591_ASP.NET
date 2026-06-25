@@ -22,8 +22,30 @@ public class Product
     public int StockQuantity { get; set; }  // Số lượng tồn kho
     public string? ImageUrl { get; set; }
 
+    // Buổi 10 — LỌC THẬT theo màu & kích cỡ (khu Màu sắc / Kích cỡ ở trang Cửa hàng).
+    // Lưu dạng CSV để đơn giản: Colors = "#000000,#063AF5" ; Sizes = "Small,Medium,Large"
+    public string? Colors { get; set; }
+    public string? Sizes { get; set; }
+
+    // Buổi 11 — BỘ SƯU TẬP NHIỀU ẢNH: các URL cách nhau bằng xuống dòng hoặc dấu phẩy
+    // (admin upload nhiều file hoặc dán nhiều link; FrontEnd hiện gallery ở trang chi tiết)
+    public string? GalleryUrls { get; set; }
+
     public int CategoryProductId { get; set; } // Khóa ngoại
+
+    /// <summary>Thương hiệu của sản phẩm (null = chưa gán) — mục 1 báo cáo</summary>
+    public int? BrandId { get; set; }
 
     [ForeignKey(nameof(CategoryProductId))]
     public virtual CategoryProduct? CategoryProduct { get; set; }
+
+    [ForeignKey(nameof(BrandId))]
+    public virtual Brand? Brand { get; set; }
+
+    /// <summary>
+    /// Các biến thể SKU (Màu × Size). Khi sản phẩm CÓ biến thể thì tồn kho thật
+    /// nằm ở từng biến thể; StockQuantity của Product = tổng các biến thể
+    /// (được đồng bộ lại mỗi khi bán/nhập hàng).
+    /// </summary>
+    public virtual ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
 }

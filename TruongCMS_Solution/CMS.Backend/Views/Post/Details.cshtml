@@ -2,7 +2,7 @@
     Ho ten: Quang Van Truong || MSV: 2123170591
     Mon hoc: ASP.NET || Giang vien: Nguyen Cao Thai
     Bai thuc hanh: 4
-    Ngay thuc hien: 23/03/2026
+    Ngay thuc hien: 23/05/2026
     Version: 1.4
 *@
 @model CMS.Data.Entities.Post
@@ -39,7 +39,9 @@
         <p class="text-muted">Dang ngay: @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
         <hr />
 
-        <div class="fs-5 lh-lg">@Model.Content</div>
+        @* Tieu chi 15/35: Content la ma HTML do CKEditor sinh ra
+           -> dung Html.Raw de hien thi dung dinh dang (dam, nghieng, anh giua bai) *@
+        <div class="fs-5 lh-lg">@Html.Raw(Model.Content)</div>
 
         <div class="mt-4 pt-3 border-top d-flex gap-2">
             <a asp-action="Index" class="btn btn-secondary">
